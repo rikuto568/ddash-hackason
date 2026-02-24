@@ -1,14 +1,7 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 def weighted_score(scores: list[float], weights: list[int]) -> float:
     if len(scores) != len(weights):
@@ -23,7 +16,9 @@ def weighted_score(scores: list[float], weights: list[int]) -> float:
     return sum(score * weight for score, weight in zip(scores, weights)) / total_weight
 
 
-
+@app.get("/")
+def root():
+    return {"message": "Server OK"}
 
 @app.get("/result")
 def get_result():
@@ -44,3 +39,4 @@ def get_result():
 
     # 結果だけ返す
     return {"result": round(result, 2)}
+
