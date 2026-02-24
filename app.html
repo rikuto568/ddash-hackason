@@ -60,12 +60,18 @@
 <!-- グーグルスタジオUI -->
 <script>
   function weightedScore(scores, weights) {
-    if (!Array.isArray(scores) || !Array.isArray(weights)) throw new Error("scores/weights must be arrays");
-    if (scores.length !== weights.length) throw new Error("scores と weights の長さが一致しません");
+    if (!Array.isArray(scores) || !Array.isArray(weights))
+      throw new Error("scores/weights must be arrays");
+    if (scores.length !== weights.length)
+      throw new Error("scores と weights の長さが一致しません");
     if (scores.length === 0) throw new Error("scores が空です");
     const totalWeight = weights.reduce((a, b) => a + Number(b), 0);
-    if (totalWeight <= 0) throw new Error("weights の合計は 0 より大きくしてください");
-    const sum = scores.reduce((acc, score, i) => acc + Number(score) * Number(weights[i]), 0);
+    if (totalWeight <= 0)
+      throw new Error("weights の合計は 0 より大きくしてください");
+    const sum = scores.reduce(
+      (acc, score, i) => acc + Number(score) * Number(weights[i]),
+      0,
+    );
     return sum / totalWeight;
   }
 
@@ -129,11 +135,12 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ scores, weights }),
           });
-          if (!kajuaveRes.ok) throw new Error(`kajuave server error: ${kajuaveRes.status}`);
+          if (!kajuaveRes.ok)
+            throw new Error(`kajuave server error: ${kajuaveRes.status}`);
           const kajuaveJson = await kajuaveRes.json();
           weightedResult = Number(kajuaveJson.weighted_result);
         } catch (_kajuaveErr) {
-          weightedResult = Number((weightedScore(scores, weights) * 100).toFixed(4));
+          weightedResult = Number(weightedScore(scores, weights).toFixed(4));
         }
 
         kajuaveResult = {
@@ -150,7 +157,9 @@
       window.location.href = "result.html";
     } catch (err) {
       console.error(err);
-      alert("送信に失敗しました。address_submit_server.py が起動しているか確認してください。");
+      alert(
+        "送信に失敗しました。address_submit_server.py が起動しているか確認してください。",
+      );
     }
   });
 </script>

@@ -2,54 +2,62 @@
    ページ全体（背景・フォント）の設定
    ========================================= */
 body {
-    font-family: 'Zen Maru Gothic', sans-serif; /* かわいい丸ゴシック */
-    font-size: 30px;
-    background-color: #F9D2D2; /* 背景は優しいピンク */
-    min-height: 100vh; /* 背景柄が途切れないようにする魔法 */
-    
-    /* ギンガムチェック柄の設定 */
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.3) 50%, transparent 50%),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.3) 50%, transparent 50%);
-    background-size: 24px 24px;
+  font-family: "Zen Maru Gothic", sans-serif; /* かわいい丸ゴシック */
+  font-size: 30px;
+  background-color: #f9d2d2; /* 背景は優しいピンク */
+  min-height: 100vh; /* 背景柄が途切れないようにする魔法 */
 
-    margin: 0;
-    padding: 80px 20px;
-    text-align: center; /* 画面の中身をすべて中央寄せにする */
+  /* ギンガムチェック柄の設定 */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.3) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.3) 50%, transparent 50%);
+  background-size: 24px 24px;
+
+  margin: 0;
+  padding: 80px 20px;
+  text-align: center; /* 画面の中身をすべて中央寄せにする */
 }
 
 /* =========================================
    見出しの文字設定
    ========================================= */
 /* 見出しの色をすべて統一 */
-h1, h2 {
-    color: #B7445A; /* ローズ色 */
+h1,
+h2 {
+  color: #b7445a; /* ローズ色 */
 }
 
-h1 { margin-bottom: 80px; } /* index.htmlのタイトル用 */
-h2 {margin-top: 0px;
-     margin-bottom: 30px;
-     font-size: 24px; } /* app.htmlの数字を選んでください用 */
-h3 {color: #b766ab;
-     margin-top: 5px; margin-bottom: 5px;
-     font-size: 20px; 
-    } /* app.htmlの安全性など用 */
-calicurate_result{margin: 20px 0px;
-     font-size: 80px; 
-    } /* result.htmlの計算結果用 */
+h1 {
+  margin-bottom: 80px;
+} /* index.htmlのタイトル用 */
+h2 {
+  margin-top: 0px;
+  margin-bottom: 30px;
+  font-size: 24px;
+} /* app.htmlの数字を選んでください用 */
+h3 {
+  color: #b766ab;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 20px;
+} /* app.htmlの安全性など用 */
+calicurate_result {
+  margin: 20px 0px;
+  font-size: 80px;
+} /* result.htmlの計算結果用 */
 /* =========================================
    入力フォームの設定 (app.html用)
    ========================================= */
 /* 住所入力欄 */
 input[type="text"] {
-    width: 80%; 
-    max-width: 400px; 
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 2px solid #DEBDD9; 
-    border-radius: 10px; 
-    font-size: 16px;
-    box-sizing: border-box;
+  width: 80%;
+  max-width: 400px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 2px solid #debdd9;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
 /* ラジオボタンの文字 */
@@ -59,107 +67,118 @@ input[type="text"] {
    ========================================= */
 /* labelを「縦並び（上が丸、下が数字）」に変更 */
 label {
-    display: inline-flex;   /* 要素を柔軟に配置する魔法 */
-    flex-direction: column; /* 要素を「縦」に並べる */
-    align-items: center;    /* 左右の中央で揃える */
-    
-    color: #046365;
-    font-weight: bold;
-    font-size: 15px; /* ★ここで数字の大きさを小さくしています（標準は16px） */
-    margin-left: 17px;
-    margin-right: 17px; /* 選択肢同士の横の隙間を少し広めに */
-    margin-bottom: 15px;
-    cursor: pointer;
+  display: inline-flex; /* 要素を柔軟に配置する魔法 */
+  flex-direction: column; /* 要素を「縦」に並べる */
+  align-items: center; /* 左右の中央で揃える */
+
+  color: #046365;
+  font-weight: bold;
+  font-size: 15px; /* ★ここで数字の大きさを小さくしています（標準は16px） */
+  margin-left: 17px;
+  margin-right: 17px; /* 選択肢同士の横の隙間を少し広めに */
+  margin-bottom: 15px;
+  cursor: pointer;
 }
 
 /* ラジオボタン（丸い部分）の基本設定 */
 input[type="radio"] {
-    margin: 0; 
-    /* ★丸を大きくする分、下の数字と重ならないようにゆとりを持たせる */
-    margin-bottom: 15px; 
-    cursor: pointer;
+  margin: 0;
+  /* ★丸を大きくする分、下の数字と重ならないようにゆとりを持たせる */
+  margin-bottom: 15px;
+  cursor: pointer;
 }
 
 /* =========================================
    ラジオボタンの大きさ（さらに大きく！）
    ========================================= */
 /* 両端（1と5）を一番大きく */
-input[value="first"], input[value="fifth"], input[value="1"], input[value="5"] {
-    transform: scale(3.4); /* 1.8 → 2.5倍にパワーアップ！ */
+input[value="first"],
+input[value="fifth"],
+input[value="1"],
+input[value="5"] {
+  transform: scale(3.4); /* 1.8 → 2.5倍にパワーアップ！ */
 }
 
 /* その内側（2と4）を中くらいの大きさに */
-input[value="second"], input[value="fourth"], input[value="2"], input[value="4"] {
-    transform: scale(2.5); /* 1.4 → 1.8倍に */
+input[value="second"],
+input[value="fourth"],
+input[value="2"],
+input[value="4"] {
+  transform: scale(2.5); /* 1.4 → 1.8倍に */
 }
 
 /* ど真ん中（3） */
-input[value="third"], input[value="3"] {
-    transform: scale(2.0); /* 1.0 → 1.2倍に少しだけ大きく */
+input[value="third"],
+input[value="3"] {
+  transform: scale(2); /* 1.0 → 1.2倍に少しだけ大きく */
 }
 
 /* =========================================
    ボタンの設定（index.htmlの#btn と app.htmlの#submit 共通）
    ========================================= */
 #btn {
-    display: block;
-    margin: 40px auto; 
-    width: 80%; 
-    max-width: 700px; /* 入力欄と同じ横長サイズに統一 */
-    padding: 35px 0; 
+  display: block;
+  margin: 40px auto;
+  width: 80%;
+  max-width: 700px; /* 入力欄と同じ横長サイズに統一 */
+  padding: 35px 0;
 
-    background-color: #ADDAD0; /* ミントグリーン */
-    color: #046365; /* 深いグリーン */
-    font-size: 35px;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px; 
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
-    transition: all 0.1s; 
+  background-color: #addad0; /* ミントグリーン */
+  color: #046365; /* 深いグリーン */
+  font-size: 35px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.1s;
 }
 
-#submit{  /* ← ここに #back-btn を追加！ */
-    display: block;
-    margin: 1px auto; 
-    width: 80%; 
-    max-width: 200px; /* 入力欄と同じ横長サイズに統一 */
-    padding: 24px 0; 
+#submit {
+  /* ← ここに #back-btn を追加！ */
+  display: block;
+  margin: 1px auto;
+  width: 80%;
+  max-width: 200px; /* 入力欄と同じ横長サイズに統一 */
+  padding: 24px 0;
 
-    background-color: #ADDAD0; /* ミントグリーン */
-    color: #046365; /* 深いグリーン */
-    font-size: 35px;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px; 
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
-    transition: all 0.1s; 
+  background-color: #addad0; /* ミントグリーン */
+  color: #046365; /* 深いグリーン */
+  font-size: 35px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.1s;
 }
 
-#back-btn {  /* ← ここに #back-btn を追加！ */
-    display: block;
-    margin: 200px auto; 
-    width: 80%; 
-    max-width: 200px; /* 入力欄と同じ横長サイズに統一 */
-    padding: 24px 0; 
+#back-btn {
+  /* ← ここに #back-btn を追加！ */
+  display: block;
+  margin: 200px auto;
+  width: 80%;
+  max-width: 200px; /* 入力欄と同じ横長サイズに統一 */
+  padding: 24px 0;
 
-    background-color: #ADDAD0; /* ミントグリーン */
-    color: #046365; /* 深いグリーン */
-    font-size: 35px;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px; 
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
-    transition: all 0.1s; 
+  background-color: #addad0; /* ミントグリーン */
+  color: #046365; /* 深いグリーン */
+  font-size: 35px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.1s;
 }
-
 
 /* ボタンが押された瞬間のデザイン（へこむ動き） */
-#btn:active, #submit:active , #back-btn:active { /* ← ここにも追加！ */
-    transform: translateY(2px); 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
+#btn:active,
+#submit:active,
+#back-btn:active {
+  /* ← ここにも追加！ */
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 /* =========================================
@@ -167,67 +186,75 @@ input[value="third"], input[value="3"] {
    画面幅が768px以下の場合に適用される魔法
    ========================================= */
 @media screen and (max-width: 768px) {
-    /* 画面全体・文字サイズの調整 */
-    body {
-        font-size: 18px; /* 基本の文字サイズを小さくして読みやすく */
-        padding: 40px 10px; /* 上下の余白を狭めて画面を広く使う */
-    }
+  /* 画面全体・文字サイズの調整 */
+  body {
+    font-size: 18px; /* 基本の文字サイズを小さくして読みやすく */
+    padding: 40px 10px; /* 上下の余白を狭めて画面を広く使う */
+  }
 
-    /* 見出しサイズの調整 */
-    h1 {
-        margin-bottom: 40px;
-        font-size: 28px;
-    }
-    h2 {
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-    h3 {
-        font-size: 18px;
-    }
+  /* 見出しサイズの調整 */
+  h1 {
+    margin-bottom: 40px;
+    font-size: 28px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-size: 18px;
+  }
 
-    /* 計算結果の数字（80pxだとスマホではみ出るため縮小） */
-    .calicurate_result {
-        margin: 30px 0;
-        font-size: 50px; 
-    }
+  /* 計算結果の数字（80pxだとスマホではみ出るため縮小） */
+  .calicurate_result {
+    margin: 30px 0;
+    font-size: 50px;
+  }
 
-    /* =========================================
+  /* =========================================
        ラジオボタンと数字のスマホ向け調整
        ========================================= */
-    label {
-        margin-left: 8px;
-        margin-right: 8px; /* 横幅に1列で収まるように隙間を狭くする */
-        font-size: 13px;
-    }
+  label {
+    margin-left: 8px;
+    margin-right: 8px; /* 横幅に1列で収まるように隙間を狭くする */
+    font-size: 13px;
+  }
 
-    /* スマホ画面に合わせてラジオボタンの「デカデカ効果」を少しマイルドに */
-    input[value="first"], input[value="fifth"], input[value="1"], input[value="5"] {
-        transform: scale(2.5); /* 3.4だとスマホで重なるため調整 */
-    }
-    input[value="second"], input[value="fourth"], input[value="2"], input[value="4"] {
-        transform: scale(2.0); 
-    }
-    input[value="third"], input[value="3"] {
-        transform: scale(1.5); 
-    }
+  /* スマホ画面に合わせてラジオボタンの「デカデカ効果」を少しマイルドに */
+  input[value="first"],
+  input[value="fifth"],
+  input[value="1"],
+  input[value="5"] {
+    transform: scale(2.5); /* 3.4だとスマホで重なるため調整 */
+  }
+  input[value="second"],
+  input[value="fourth"],
+  input[value="2"],
+  input[value="4"] {
+    transform: scale(2);
+  }
+  input[value="third"],
+  input[value="3"] {
+    transform: scale(1.5);
+  }
 
-    /* =========================================
+  /* =========================================
        各種ボタンのスマホ向け調整
        ========================================= */
-    #btn {
-        padding: 20px 0;
-        font-size: 16px;
-        margin: 20px auto;
-    }
+  #btn {
+    padding: 20px 0;
+    font-size: 16px;
+    margin: 20px auto;
+  }
 
-    #submit, #back-btn {
-        padding: 15px 0;
-        font-size: 24px;
-        max-width: 150px; /* ボタンも少しコンパクトに */
-    }
+  #submit,
+  #back-btn {
+    padding: 15px 0;
+    font-size: 24px;
+    max-width: 150px; /* ボタンも少しコンパクトに */
+  }
 
-    #back-btn {
-        margin: 80px auto; /* スマホだと200pxは間が空きすぎるので詰める */
-    }
+  #back-btn {
+    margin: 80px auto; /* スマホだと200pxは間が空きすぎるので詰める */
+  }
 }
