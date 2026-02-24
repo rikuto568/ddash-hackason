@@ -1,2 +1,2 @@
-﻿address1,lat1,lon1,ku,hanzai_number,mini.score_hanzai,jiko_number,mini.score_jiko,mini.number,mini.score,score,anzen_score_sum,station_name,station_address,station_distance_m,mini.score_station,lat2,lon2,kokyou_name,kokyou_address,kokyou_kyori_m,error
-京都府京都市上京区新白水丸町462-17,35.0260641,135.7469717,上京区,419,6,104,10,2,16.0,0.8,16.0,北野白梅町,京都市北区北野下白梅町,1061.2,1,35.0249826,135.751824,堀川中立売南公衆便所,堀川通中立売下る東側,457.9,
+﻿address1,lat1,lon1,ku,hanzai_number,mini.score_hanzai,jiko_number,mini.score_jiko,population_number,mini.score_population,population_score,mini.number,mini.score,score,anzen_score_sum,station_name,station_address,station_distance_m,mini.score_station,lat2,lon2,kokyou_name,kokyou_address,kokyou_kyori_m,error
+京都府京都市新白水丸町462-17,35.0260641,135.7469717,上京区,419,6,104,10,12107,2,0.2,2,16.0,0.8,16.0,北野白梅町,京都市北区北野下白梅町,1061.2,1,35.0249826,135.751824,堀川中立売南公衆便所,堀川通中立売下る東側,457.9,

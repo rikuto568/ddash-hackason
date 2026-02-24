@@ -17,6 +17,7 @@ RESULT_CSV_PATH = BASE_DIR / "address1_result.csv"
 KOKYOU_SAITAN_PATH = BASE_DIR / "dataset.kokyou_saitan.py"
 HANZAI_PATH = BASE_DIR / "score" / "mini.score" / "hanzai.py"
 JIKO_PATH = BASE_DIR / "score" / "mini.score" / "jiko.py"
+POPULATION_PATH = BASE_DIR / "score" / "mini.score" / "population.py"
 ANZEN_PATH = BASE_DIR / "score" / "anzen.py"
 STATION_PATH = BASE_DIR / "score" / "mini.score" / "station.mini.py"
 SEIKIKA_PATH = BASE_DIR / "seikika.py"
@@ -41,6 +42,9 @@ def save_result_csv(result: dict[str, object]) -> None:
         "mini.score_hanzai",
         "jiko_number",
         "mini.score_jiko",
+        "population_number",
+        "mini.score_population",
+        "population_score",
         "mini.number",
         "mini.score",
         "score",
@@ -218,6 +222,9 @@ def build_result_for_address(address: str) -> dict[str, object]:
         "mini.score_hanzai": "",
         "jiko_number": "",
         "mini.score_jiko": "",
+        "population_number": "",
+        "mini.score_population": "",
+        "population_score": "",
         "mini.number": "",
         "mini.score": "",
         "score": "",
@@ -260,6 +267,13 @@ def build_result_for_address(address: str) -> dict[str, object]:
                 if jiko_result.get("error") and not result.get("error"):
                     result["error"] = jiko_result["error"]
 
+                population_mod = load_module_from_path("population_mod", POPULATION_PATH)
+                population_result = population_mod.get_population_mini_score_by_ku(str(result["ku"]))
+                result["population_number"] = population_result.get("number", "")
+                result["mini.score_population"] = population_result.get("mini.score_population", "")
+                if population_result.get("error") and not result.get("error"):
+                    result["error"] = population_result["error"]
+
                 anzen_mod = load_module_from_path("anzen_mod", ANZEN_PATH)
                 anzen_result = anzen_mod.get_anzen_score_by_ku(str(result["ku"]))
                 result["mini.number"] = anzen_result.get("mini.number", "")
@@ -291,6 +305,12 @@ def build_result_for_address(address: str) -> dict[str, object]:
                         {"mini.number": 1, "mini.score": result["mini.score_station"]}
                     )
                     result["station_score"] = station_norm.get("score", "")
+
+                if result.get("mini.score_population") != "":
+                    population_norm = seikika_mod.normalize_mini_score_result(
+                        {"mini.number": 1, "mini.score": result["mini.score_population"]}
+                    )
+                    result["population_score"] = population_norm.get("score", "")
 
             kokyou_mod = load_module_from_path("dataset_kokyou_saitan", KOKYOU_SAITAN_PATH)
             nearest = kokyou_mod.find_nearest_kokyou(float(result["lat1"]), float(result["lon1"]))

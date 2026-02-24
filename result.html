@@ -40,11 +40,14 @@
         lines.push(`mini.score_hanzai: ${addressResult["mini.score_hanzai"] ?? ""}`);
         lines.push(`jiko.number: ${addressResult.jiko_number ?? ""}`);
         lines.push(`mini.score_jiko: ${addressResult["mini.score_jiko"] ?? ""}`);
+        lines.push(`population.number: ${addressResult.population_number ?? ""}`);
+        lines.push(`mini.score_population: ${addressResult["mini.score_population"] ?? ""}`);
         lines.push(`mini.score_station: ${addressResult["mini.score_station"] ?? ""}`);
         lines.push(`mini.number: ${addressResult["mini.number"] ?? ""}`);
         lines.push(`mini.score: ${addressResult["mini.score"] ?? ""}`);
         lines.push(`score (seikika / anzen): ${addressResult.score ?? ""}`);
         lines.push(`score (seikika / station): ${addressResult.station_score ?? ""}`);
+        lines.push(`score (seikika / population): ${addressResult.population_score ?? ""}`);
         lines.push(`station: ${addressResult.station_name ?? ""} / ${addressResult.station_distance_m ?? ""} m`);
         lines.push(`nearest public facility distance: ${addressResult.kokyou_kyori_m ?? ""} m`);
         if (addressResult.error) lines.push(`error: ${addressResult.error}`);
@@ -64,6 +67,7 @@
         lines.push("=== 入力した重要度 ===");
         lines.push(`anzen: ${formInput.anzen ?? ""}`);
         lines.push(`station: ${formInput.station ?? ""}`);
+        lines.push(`population: ${formInput.population ?? ""}`);
       }
 
       detailsEl.innerText = lines.join("\n");

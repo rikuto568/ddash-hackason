@@ -31,6 +31,13 @@
     <label><input type="radio" name="station" value="4" />4</label>
     <label><input type="radio" name="station" value="5" />5</label>
 
+    <h3>人口の多さ（population）</h3>
+    <label><input type="radio" name="population" value="1" />1</label>
+    <label><input type="radio" name="population" value="2" />2</label>
+    <label><input type="radio" name="population" value="3" />3</label>
+    <label><input type="radio" name="population" value="4" />4</label>
+    <label><input type="radio" name="population" value="5" />5</label>
+
     <h3>環境快適性</h3>
     <label><input type="radio" name="comfort" value="1" />1</label>
     <label><input type="radio" name="comfort" value="2" />2</label>
@@ -74,7 +81,7 @@
     }
 
     // ラジオチェック
-    const radioGroups = ["useful", "anzen", "station", "comfort", "service"];
+    const radioGroups = ["useful", "anzen", "station", "population", "comfort", "service"];
     const data = {}; // Pythonに送るデータ
     for (const groupName of radioGroups) {
       const checked = document.querySelector(
@@ -102,16 +109,18 @@
       }
       const addressResult = await addrRes.json();
 
-      // 今ある基準は anzen / station。kajuave.py(/weighted) で集約（失敗時は同式でフォールバック）
+      // 今ある基準は anzen / station / population。kajuave.py(/weighted) で集約（失敗時は同式でフォールバック）
       const anzenScore = Number(addressResult.score);
       const stationScore = Number(addressResult.station_score);
+      const populationScore = Number(addressResult.population_score);
       const anzenWeight = Number(data.anzen);
       const stationWeight = Number(data.station);
+      const populationWeight = Number(data.population);
 
       let kajuaveResult = null;
-      if (!Number.isNaN(anzenScore) && !Number.isNaN(stationScore)) {
-        const scores = [anzenScore, stationScore];
-        const weights = [anzenWeight, stationWeight];
+      if (!Number.isNaN(anzenScore) && !Number.isNaN(stationScore) && !Number.isNaN(populationScore)) {
+        const scores = [anzenScore, stationScore, populationScore];
+        const weights = [anzenWeight, stationWeight, populationWeight];
         let weightedResult = null;
 
         try {
@@ -128,7 +137,7 @@
         }
 
         kajuaveResult = {
-          criteria: ["anzen", "station"],
+          criteria: ["anzen", "station", "population"],
           scores,
           weights,
           weighted_result: Number(Number(weightedResult).toFixed(4)),
