@@ -43,21 +43,42 @@ h1 {
 }
 
 
-/* ページ全体（背景）の設定 */
+/* =========================================
+   ページ全体（背景・フォント）の設定
+   ========================================= */
 body {
+    font-family: 'Zen Maru Gothic', sans-serif; /* かわいい丸ゴシック */
     background-color: #F9D2D2; /* 背景は優しいピンク */
+    
+    /* ドット柄（水玉）の設定 */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.4) 3px, transparent 3px);
+    background-size: 20px 20px;
+
     margin: 0;
     padding: 40px 20px;
     text-align: center; /* 画面の中身をすべて中央寄せにする */
 }
 
-/* 見出し（h2）の設定 */
+/* =========================================
+   見出しの文字設定
+   ========================================= */
+/* 大見出し（h2 - 数字を選んでくださいなど） */
 h2 {
     color: #B7445A; /* ローズ色で統一 */
     margin-bottom: 30px; /* 下に少し余白をあける */
 }
 
-/* 住所入力欄（input）の設定 */
+/* 小見出し（h3 - 安全性・価格など） */
+h3 {
+    color: #B7445A;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+/* =========================================
+   入力フォームの設定
+   ========================================= */
+/* 住所入力欄（input text） */
 input[type="text"] {
     width: 80%; /* スマホで見てもはみ出さないように */
     max-width: 400px; /* パソコンで見た時の最大の横幅 */
@@ -69,45 +90,43 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
-/* ラベル（第1優先など）の設定 */
+/* ラジオボタンの文字（label）を横並びに */
 label {
-    display: block; /* 縦に並べるための魔法 */
-    color: #046365; /* 深いグリーンで文字を読みやすく */
+    display: inline-block; /* 横に並べる魔法 */
+    color: #046365;
     font-weight: bold;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    margin-right: 15px; /* ボタン同士の右側に隙間をあける */
+    margin-bottom: 15px;
+    cursor: pointer; /* マウスを乗せたら指のマークにする */
 }
 
-/* ドロップダウン（select）の設定 */
-select {
-    width: 60%;
-    max-width: 300px;
-    padding: 12px;
-    border: 2px solid #DEBDD9;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #333;
-    background-color: white;
+/* ラジオボタン（丸い部分）の微調整 */
+input[type="radio"] {
+    margin-right: 5px; /* 丸と数字の間に少し隙間をあける */
+    transform: scale(1.2); /* 丸を少しだけ大きくして押しやすくする */
     cursor: pointer;
 }
 
-/* 決定ボタン（#submit）の設定 */
+/* =========================================
+   決定ボタン（#submit）の設定
+   ========================================= */
 #submit {
     display: block;
     margin: 40px auto; /* ボタンを真ん中に */
     background-color: #ADDAD0; /* ミントグリーン */
-    color: #046365;
+    color: #046365; /* 深いグリーンで文字をくっきり */
     font-size: 18px;
     font-weight: bold;
     padding: 15px 50px;
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    transition: all 0.1s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* ふんわりした影 */
+    transition: all 0.1s; /* アニメーションを滑らかにする魔法 */
 }
 
+/* 決定ボタンが押された瞬間のデザイン（へこむ動き） */
 #submit:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transform: translateY(2px); /* 2px下にずらす */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* 影を小さくする */
 }
