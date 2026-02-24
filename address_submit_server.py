@@ -2,6 +2,7 @@ import csv
 import html
 import importlib.util
 import json
+import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs
@@ -419,8 +420,8 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    host = "127.0.0.1"
-    port = 8000
+    host = os.getenv("ADDRESS_SERVER_HOST", "127.0.0.1")
+    port = int(os.getenv("ADDRESS_SERVER_PORT", "8000"))
     httpd = HTTPServer((host, port), Handler)
     print(f"Server started: http://{host}:{port}")
     print("Open address.html via this URL and submit to test.")

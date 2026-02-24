@@ -59,6 +59,13 @@
 </html>
 <!-- グーグルスタジオUI -->
 <script>
+  const addressApiBase =
+    localStorage.getItem("ADDRESS_API_BASE") ||
+    `${window.location.protocol}//${window.location.hostname}:8000`;
+  const kajuaveApiBase =
+    localStorage.getItem("KAJUAVE_API_BASE") ||
+    `${window.location.protocol}//${window.location.hostname}:5000`;
+
   function weightedScore(scores, weights) {
     if (!Array.isArray(scores) || !Array.isArray(weights))
       throw new Error("scores/weights must be arrays");
@@ -105,7 +112,7 @@
 
     try {
       // 住所解析 + 各種スコア（address_submit_server.py -> address1_where.py 等）
-      const addrRes = await fetch("http://127.0.0.1:8000/submit-json", {
+      const addrRes = await fetch(`${addressApiBase}/submit-json`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address }),
@@ -130,7 +137,7 @@
         let weightedResult = null;
 
         try {
-          const kajuaveRes = await fetch("http://127.0.0.1:5000/weighted", {
+          const kajuaveRes = await fetch(`${kajuaveApiBase}/weighted`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ scores, weights }),

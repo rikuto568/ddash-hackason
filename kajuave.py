@@ -5,7 +5,10 @@ from typing import Sequence
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-import calculateseg
+try:
+    import calculateseg
+except ImportError:  # /weighted only usage can work without calculateseg.py
+    calculateseg = None
 
 
 app = FastAPI()
@@ -46,6 +49,8 @@ def build_scores_from_normalized(
     - scores: [SCORE_1, SCORE_2, ...] のリスト
     - score_map: {"SCORE_1": ..., "SCORE_2": ...}
     """
+    if calculateseg is None:
+        raise RuntimeError("calculateseg.py is required for /result (normalize_then_weighted mode)")
     score_map = calculateseg.normalize_and_store(values, axis_values)
     scores = calculateseg.get_score_list()
     return scores, score_map
@@ -69,7 +74,7 @@ def get_result_sample():
     try:
         scores, score_map = build_scores_from_normalized(values, axis_values)
         result = weighted_score(scores, weights)
-    except ValueError as e:
+    except (ValueError, RuntimeError) as e:
         raise HTTPException(status_code=400, detail=str(e))
 
     return {
@@ -93,7 +98,7 @@ def get_weighted_sample():
     weights = [5, 3]
     try:
         result = weighted_score(scores, weights)
-    except ValueError as e:
+    except (ValueError, RuntimeError) as e:
         raise HTTPException(status_code=400, detail=str(e))
 
     return {

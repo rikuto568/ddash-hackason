@@ -1,1 +1,5 @@
 .env
+__pycache__/
+*.pyc
+.venv/
+address1_result.csv
