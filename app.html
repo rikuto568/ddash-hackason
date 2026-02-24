@@ -9,40 +9,40 @@
     <h2>数字を選んでください（なんかもっとあるかも）</h2>
     <input type="text" placeholder="住所を入力してください" />
 
-    <h3>安全性</h3>
-    <label><input type="radio" name="rank1" value="first" />1</label>
-    <label><input type="radio" name="rank2" value="second" />2</label>
-    <label><input type="radio" name="rank3" value="third" />3</label>
-    <label><input type="radio" name="rank4" value="fourth" />4</label>
-    <label><input type="radio" name="rank5" value="fifth" />5</label>
+    <h3>生活利便性</h3>
+    <label><input type="radio" name="useful" value="first" />1</label>
+    <label><input type="radio" name="useful" value="second" />2</label>
+    <label><input type="radio" name="useful" value="third" />3</label>
+    <label><input type="radio" name="useful" value="fourth" />4</label>
+    <label><input type="radio" name="useful" value="fifth" />5</label>
 
     <h3>安全性</h3>
-    <label><input type="radio" name="rank1" value="first" />1</label>
-    <label><input type="radio" name="rank2" value="second" />2</label>
-    <label><input type="radio" name="rank3" value="third" />3</label>
-    <label><input type="radio" name="rank4" value="fourth" />4</label>
-    <label><input type="radio" name="rank5" value="fifth" />5</label>
+    <label><input type="radio" name="safety" value="first" />1</label>
+    <label><input type="radio" name="safety" value="second" />2</label>
+    <label><input type="radio" name="safety" value="third" />3</label>
+    <label><input type="radio" name="safety" value="fourth" />4</label>
+    <label><input type="radio" name="safety" value="fifth" />5</label>
 
-    <h3>安全性</h3>
-    <label><input type="radio" name="rank1" value="first" />1</label>
-    <label><input type="radio" name="rank2" value="second" />2</label>
-    <label><input type="radio" name="rank3" value="third" />3</label>
-    <label><input type="radio" name="rank4" value="fourth" />4</label>
-    <label><input type="radio" name="rank5" value="fifth" />5</label>
+    <h3>交通アクセス性</h3>
+    <label><input type="radio" name="access" value="first" />1</label>
+    <label><input type="radio" name="access" value="second" />2</label>
+    <label><input type="radio" name="access" value="third" />3</label>
+    <label><input type="radio" name="access" value="fourth" />4</label>
+    <label><input type="radio" name="access" value="fifth" />5</label>
 
-    <h3>安全性</h3>
-    <label><input type="radio" name="rank1" value="first" />1</label>
-    <label><input type="radio" name="rank2" value="second" />2</label>
-    <label><input type="radio" name="rank3" value="third" />3</label>
-    <label><input type="radio" name="rank4" value="fourth" />4</label>
-    <label><input type="radio" name="rank5" value="fifth" />5</label>
+    <h3>環境快適性</h3>
+    <label><input type="radio" name="comfort" value="first" />1</label>
+    <label><input type="radio" name="comfort" value="second" />2</label>
+    <label><input type="radio" name="comfort" value="third" />3</label>
+    <label><input type="radio" name="comfort" value="fourth" />4</label>
+    <label><input type="radio" name="comfort" value="fifth" />5</label>
 
-    <h3>安全性</h3>
-    <label><input type="radio" name="rank1" value="first" />1</label>
-    <label><input type="radio" name="rank2" value="second" />2</label>
-    <label><input type="radio" name="rank3" value="third" />3</label>
-    <label><input type="radio" name="rank4" value="fourth" />4</label>
-    <label><input type="radio" name="rank5" value="fifth" />5</label>
+    <h3>サービス性</h3>
+    <label><input type="radio" name="service" value="first" />1</label>
+    <label><input type="radio" name="service" value="second" />2</label>
+    <label><input type="radio" name="service" value="third" />3</label>
+    <label><input type="radio" name="service" value="fourth" />4</label>
+    <label><input type="radio" name="service" value="fifth" />5</label>
 
     <!-- ここのbrは仮で -->
     <br /><br />
@@ -50,3 +50,9 @@
   </body>
 </html>
 <!-- グーグルスタジオUI -->
+<script>
+  document.getElementById("submit").addEventListener("click", () => {
+    // result.html に遷移
+    window.location.href = "result.html";
+  });
+</script>
