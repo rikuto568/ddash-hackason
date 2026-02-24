@@ -1,8 +1,8 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>子育て住まいチェッカー</title>
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -63,18 +63,42 @@
       return; // 画面遷移を止める
     }
 
+    // ラジオチェック
     const radioGroups = ["useful", "safety", "access", "comfort", "service"];
+    const data = {}; // Pythonに送るデータ
     for (const groupName of radioGroups) {
       const checked = document.querySelector(
         `input[name="${groupName}"]:checked`,
       );
       if (!checked) {
         alert("全ての項目を選択してください");
-        return; // 未選択があれば処理を止める
+        return;
       }
+      data[groupName] = checked.value;
     }
 
-    try {
+    // 住所も送る
+    data.address = address;
+
+    // Pythonに送信（Flaskなどのサーバーで受け取る想定）
+    fetch("http://127.0.0.1:5000/calc", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result); // Python側で計算した結果
+        // ここで result.html に移動したり、値を表示する処理に使える
+        window.location.href = "result.html";
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("送信に失敗しました");
+      });
+  });
+  // 武田君の処理
+   try {
       const response = await fetch("http://127.0.0.1:8000/result");
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status}`);
@@ -87,5 +111,4 @@
       console.error(error);
       alert("計算結果の取得に失敗しました。サーバー起動状態を確認してください。");
     }
-  });
 </script>
