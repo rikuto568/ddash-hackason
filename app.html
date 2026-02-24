@@ -63,6 +63,17 @@
       return; // 画面遷移を止める
     }
 
+    const radioGroups = ["useful", "safety", "access", "comfort", "service"];
+    for (const groupName of radioGroups) {
+      const checked = document.querySelector(
+        `input[name="${groupName}"]:checked`,
+      );
+      if (!checked) {
+        alert("全ての項目を選択してください");
+        return; // 未選択があれば処理を止める
+      }
+    }
+
     // 有効なら画面遷移
     window.location.href = "result.html";
   });
