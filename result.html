@@ -25,7 +25,7 @@
       const detailsEl = document.getElementById("details");
 
       if (kajuaveResult && typeof kajuaveResult.weighted_result === "number") {
-        outputEl.innerText = `加重平均結果（kajuave）: ${kajuaveResult.weighted_result}`;
+        outputEl.innerText = `加重平均結果（kajuave / 100点満点）: ${kajuaveResult.weighted_result} 点`;
       } else {
         outputEl.innerText = "kajuave の結果を取得できませんでした";
       }
@@ -56,7 +56,7 @@
         lines.push(`criteria: ${(kajuaveResult.criteria || []).join(", ")}`);
         lines.push(`scores: ${(kajuaveResult.scores || []).join(", ")}`);
         lines.push(`weights: ${(kajuaveResult.weights || []).join(", ")}`);
-        lines.push(`weighted_result: ${kajuaveResult.weighted_result ?? ""}`);
+        lines.push(`weighted_result (100点満点): ${kajuaveResult.weighted_result ?? ""}`);
       }
 
       if (formInput) {

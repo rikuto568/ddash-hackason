@@ -79,7 +79,7 @@ def get_result_sample():
         "normalized_score_map": score_map,
         "scores": scores,
         "weights": weights,
-        "weighted_result": round(result, 4),
+        "weighted_result": round(result * 100, 4),
     }
 
 
@@ -100,7 +100,7 @@ def get_weighted_sample():
         "mode": "weighted_only",
         "scores": scores,
         "weights": weights,
-        "weighted_result": round(result, 4),
+        "weighted_result": round(result * 100, 4),
     }
 
 
@@ -123,7 +123,7 @@ def get_result(payload: ScoreRequest):
 
         if payload.weights is not None:
             response["weights"] = payload.weights
-            response["weighted_result"] = round(weighted_score(scores, payload.weights), 4)
+            response["weighted_result"] = round(weighted_score(scores, payload.weights) * 100, 4)
 
         return response
 
@@ -142,7 +142,7 @@ def get_weighted_from_scores(payload: WeightedScoresRequest):
             "mode": "weighted_only",
             "scores": payload.scores,
             "weights": payload.weights,
-            "weighted_result": round(weighted_score(payload.scores, payload.weights), 4),
+            "weighted_result": round(weighted_score(payload.scores, payload.weights) * 100, 4),
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

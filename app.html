@@ -124,7 +124,7 @@
           const kajuaveJson = await kajuaveRes.json();
           weightedResult = Number(kajuaveJson.weighted_result);
         } catch (_kajuaveErr) {
-          weightedResult = Number(weightedScore(scores, weights).toFixed(4));
+          weightedResult = Number((weightedScore(scores, weights) * 100).toFixed(4));
         }
 
         kajuaveResult = {
