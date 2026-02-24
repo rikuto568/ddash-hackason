@@ -52,7 +52,17 @@
 <!-- グーグルスタジオUI -->
 <script>
   document.getElementById("submit").addEventListener("click", () => {
-    // result.html に遷移
+    const address = document.querySelector('input[type="text"]').value.trim();
+
+    // 住所が "京都" で始まらなければ無効
+    const regex = /^京都/;
+
+    if (!regex.test(address) || address.length < 10) {
+      alert("京都の正しい住所を入力してください");
+      return; // 画面遷移を止める
+    }
+
+    // 有効なら画面遷移
     window.location.href = "result.html";
   });
 </script>
