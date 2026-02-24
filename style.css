@@ -1,132 +1,181 @@
-
-/* ページ全体（背景）の設定 */
-body {
-    background-color: #F9D2D2; /* ご希望の左上のピンク */
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.3) 50%, transparent 50%),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.3) 50%, transparent 50%);
-    background-size: 24px 24px;
-    margin: 0; 
-    padding-top: 50px; /* 画面の上部に少しゆとりを持たせる */
-}
-
-/* タイトル（h1）の設定 */
-h1 {
-    text-align: center; 
-    color: #B7445A; /* 下段真ん中の濃いローズ色。背景のピンクと馴染みつつ読みやすく */
-    font-size: 42px;
-    margin-bottom: 45px; }
-
-
-/* ボタン（#btn）の設定 */
-#btn {
-    display: block;
-    margin: 30px auto; /* ボタンを真ん中に配置 */
-
-    background-color: #ADDAD0; /* 下段左のミントグリーン。ピンクの背景に映える優しい色です */
-    color: #046365; /* 右上の深いグリーンで、ボタンの文字をくっきりと */
-    
-    font-size: 18px;
-    font-weight: bold; /* 文字を少し太く */
-    padding: 15px 50px;
-    border: none;
-    border-radius: 30px; /* 角をしっかり丸くしてコロンとした形に */
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* 影をほんのり薄くして、ふんわり感を演出 */
-    transition: all 0.1s;
-}
-
-/* ↓ ボタンが押された瞬間（アクティブ時）のデザイン */
-#btn:active {
-    transform: translateY(2px); /* ボタンを下に 2px ずらす */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* 影を小さく、薄くする */
-}
-
-
 /* =========================================
    ページ全体（背景・フォント）の設定
    ========================================= */
 body {
     font-family: 'Zen Maru Gothic', sans-serif; /* かわいい丸ゴシック */
+    font-size: 30px;
     background-color: #F9D2D2; /* 背景は優しいピンク */
+    min-height: 100vh; /* 背景柄が途切れないようにする魔法 */
     
-    /* ドット柄（水玉）の設定 */
-    background-image: radial-gradient(rgba(255, 255, 255, 0.4) 3px, transparent 3px);
-    background-size: 20px 20px;
+    /* ギンガムチェック柄の設定 */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.3) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.3) 50%, transparent 50%);
+    background-size: 24px 24px;
 
     margin: 0;
-    padding: 40px 20px;
+    padding: 80px 20px;
     text-align: center; /* 画面の中身をすべて中央寄せにする */
 }
 
 /* =========================================
    見出しの文字設定
    ========================================= */
-/* 大見出し（h2 - 数字を選んでくださいなど） */
-h2 {
-    color: #B7445A; /* ローズ色で統一 */
-    margin-bottom: 30px; /* 下に少し余白をあける */
+/* 見出しの色をすべて統一 */
+h1, h2, h3 {
+    color: #B7445A; /* ローズ色 */
 }
 
-/* 小見出し（h3 - 安全性・価格など） */
-h3 {
-    color: #B7445A;
-    margin-top: 25px;
-    margin-bottom: 10px;
-}
+h1 { margin-bottom: 80px; } /* index.htmlのタイトル用 */
+h2 {margin-top: 0px;
+     margin-bottom: 30px;
+     font-size: 24px; } /* app.htmlの数字を選んでください用 */
+h3 { margin-top: 5px; margin-bottom: 5px;
+     font-size: 20px; 
+    } /* app.htmlの安全性など用 */
 
 /* =========================================
-   入力フォームの設定
+   入力フォームの設定 (app.html用)
    ========================================= */
-/* 住所入力欄（input text） */
+/* 住所入力欄 */
 input[type="text"] {
-    width: 80%; /* スマホで見てもはみ出さないように */
-    max-width: 400px; /* パソコンで見た時の最大の横幅 */
+    width: 80%; 
+    max-width: 400px; 
     padding: 15px;
     margin-bottom: 20px;
-    border: 2px solid #DEBDD9; /* パレットの薄紫を枠線に */
-    border-radius: 10px; /* 角を丸く */
+    border: 2px solid #DEBDD9; 
+    border-radius: 10px; 
     font-size: 16px;
     box-sizing: border-box;
 }
 
-/* ラジオボタンの文字（label）を横並びに */
+/* ラジオボタンの文字 */
+
+/* =========================================
+   ラジオボタンと数字のレイアウト設定
+   ========================================= */
+/* labelを「縦並び（上が丸、下が数字）」に変更 */
 label {
-    display: inline-block; /* 横に並べる魔法 */
+    display: inline-flex;   /* 要素を柔軟に配置する魔法 */
+    flex-direction: column; /* 要素を「縦」に並べる */
+    align-items: center;    /* 左右の中央で揃える */
+    
     color: #046365;
     font-weight: bold;
-    margin-right: 15px; /* ボタン同士の右側に隙間をあける */
+    font-size: 15px; /* ★ここで数字の大きさを小さくしています（標準は16px） */
+    margin-left: 17px;
+    margin-right: 17px; /* 選択肢同士の横の隙間を少し広めに */
     margin-bottom: 15px;
-    cursor: pointer; /* マウスを乗せたら指のマークにする */
+    cursor: pointer;
 }
 
-/* ラジオボタン（丸い部分）の微調整 */
+/* ラジオボタン（丸い部分）の基本設定 */
 input[type="radio"] {
-    margin-right: 5px; /* 丸と数字の間に少し隙間をあける */
-    transform: scale(1.2); /* 丸を少しだけ大きくして押しやすくする */
+    margin: 0; 
+    /* ★丸を大きくする分、下の数字と重ならないようにゆとりを持たせる */
+    margin-bottom: 15px; 
     cursor: pointer;
 }
 
 /* =========================================
-   決定ボタン（#submit）の設定
+   ラジオボタンの大きさ（さらに大きく！）
    ========================================= */
-#submit {
-    display: block;
-    margin: 40px auto; /* ボタンを真ん中に */
-    background-color: #ADDAD0; /* ミントグリーン */
-    color: #046365; /* 深いグリーンで文字をくっきり */
-    font-size: 18px;
-    font-weight: bold;
-    padding: 15px 50px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* ふんわりした影 */
-    transition: all 0.1s; /* アニメーションを滑らかにする魔法 */
+/* 両端（1と5）を一番大きく */
+input[value="first"], input[value="fifth"], input[value="1"], input[value="5"] {
+    transform: scale(3.4); /* 1.8 → 2.5倍にパワーアップ！ */
 }
 
-/* 決定ボタンが押された瞬間のデザイン（へこむ動き） */
-#submit:active {
-    transform: translateY(2px); /* 2px下にずらす */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* 影を小さくする */
+/* その内側（2と4）を中くらいの大きさに */
+input[value="second"], input[value="fourth"], input[value="2"], input[value="4"] {
+    transform: scale(2.5); /* 1.4 → 1.8倍に */
+}
+
+/* ど真ん中（3） */
+input[value="third"], input[value="3"] {
+    transform: scale(2.0); /* 1.0 → 1.2倍に少しだけ大きく */
+}
+
+
+/* =========================================
+   ボタンの設定（index.htmlの#btn と app.htmlの#submit 共通）
+   ========================================= */
+#btn {
+    display: block;
+    margin: 40px auto; 
+    width: 80%; 
+    max-width: 700px; /* 入力欄と同じ横長サイズに統一 */
+    padding: 35px 0; 
+
+    background-color: #ADDAD0; /* ミントグリーン */
+    color: #046365; /* 深いグリーン */
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px; 
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
+    transition: all 0.1s; 
+}
+
+#submit {
+    display: block;
+    margin: 1px auto; 
+    width: 80%; 
+    max-width: 400px; /* 入力欄と同じ横長サイズに統一 */
+    padding: 35px 0; 
+
+    background-color: #ADDAD0; /* ミントグリーン */
+    color: #046365; /* 深いグリーン */
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px; 
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
+    transition: all 0.1s; 
+}
+
+/* ボタンが押された瞬間のデザイン（へこむ動き） */
+#btn:active, #submit:active {
+    transform: translateY(2px); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
+}
+
+/* =========================================
+   レスポンシブデザイン（スマホ向けの調整）
+   ========================================= */
+/* 画面の横幅が 600px 以下（スマホサイズ）の時にだけ発動する魔法 */
+@media screen and (max-width: 600px) {
+    
+    /* 1. 画面の端っこの余白を少し狭くして、スマホの画面を広く使う */
+    body {
+        padding: 20px 10px;
+    }
+
+    /* 2. 見出しの文字サイズをスマホに合わせて少し小さく */
+    h1 {
+        font-size: 26px;
+    }
+    h2 {
+        font-size: 20px;
+    }
+
+    /* 3. ラジオボタンが横にはみ出さないよう、倍率を少しだけ下げる */
+    input[value="first"], input[value="fifth"], input[value="1"], input[value="5"] {
+        transform: scale(2.0); /* PCでは2.5倍でしたが、スマホでは2.0倍に */
+    }
+    
+    input[value="second"], input[value="fourth"], input[value="2"], input[value="4"] {
+        transform: scale(1.5); /* 1.8倍 → 1.5倍に */
+    }
+    
+    input[value="third"], input[value="3"] {
+        transform: scale(1.0); /* 1.2倍 → 標準サイズ(1.0)に */
+    }
+
+    /* 4. ラジオボタン同士の横の隙間も、スマホ用に少し狭くする */
+    label {
+        margin-left: 9px; /* 17px → 9pxに */
+        margin-right: 9px; /* 20px → 12pxに */
+    }
 }
