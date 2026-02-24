@@ -134,7 +134,16 @@ input[value="third"], input[value="3"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
     transition: all 0.1s; 
 }
-
+#back-btn {  /* ← ここに #back-btn を追加！ */
+    display: block;
+    margin: 40px auto; 
+    /* ... (中略) ... */
+    transition: all 0.1s; 
+}
+#back-btn:active { /* ← ここにも追加！ */
+    transform: translateY(2px); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
+}
 /* ボタンが押された瞬間のデザイン（へこむ動き） */
 #btn:active, #submit:active {
     transform: translateY(2px); 
