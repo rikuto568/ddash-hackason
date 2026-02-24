@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Address Geocode Test</title>
+        <style>
+            body {
+                font-family:
+                    "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+                margin: 0;
+                min-height: 100vh;
+                display: grid;
+                place-items: center;
+                background: #f5f7fb;
+                color: #1f2937;
+            }
+            .card {
+                width: min(560px, 92vw);
+                background: #fff;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 24px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            }
+            h1 {
+                margin: 0 0 8px;
+                font-size: 1.25rem;
+            }
+            p {
+                margin: 0 0 16px;
+                color: #475569;
+            }
+            label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+            input[type="text"] {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 12px;
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+                font-size: 1rem;
+                margin-bottom: 14px;
+            }
+            button {
+                border: none;
+                border-radius: 8px;
+                background: #2563eb;
+                color: #fff;
+                padding: 10px 16px;
+                font-size: 1rem;
+                cursor: pointer;
+            }
+            button:hover {
+                background: #1d4ed8;
+            }
+            .note {
+                margin-top: 12px;
+                font-size: 0.9rem;
+                color: #64748b;
+            }
+        </style>
+    </head>
+    <body>
+        <main class="card">
+            <h1>住所 -> address1 / lat1 / lon1 テスト</h1>
+            <p>
+                submitすると Python の `address1_where.py` に送られて geocode
+                結果を表示します。
+            </p>
+            <form action="/submit" method="post">
+                <label for="address">address</label>
+                <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    placeholder="例: 東京都千代田区丸の内1-1-1"
+                    required
+                />
+                <button type="submit">Submit</button>
+            </form>
+            <div class="note">
+                テスト用サーバー: <code>python address_submit_server.py</code>
+            </div>
+        </main>
+    </body>
+</html>

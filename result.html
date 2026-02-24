@@ -2,33 +2,72 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>結果ページ - 子育て住まいチェッカー</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1 class="calicurate_result">計算結果</h1>
 
-    <!-- 結果表示用 -->
     <div id="result-container">
       <p id="output">結果を読み込み中...</p>
+      <pre id="details" style="white-space: pre-wrap; word-break: break-word;"></pre>
     </div>
 
-    <!-- 戻るボタン -->
     <button id="back-btn"><i class="fa-solid fa-door-open"></i>戻る</button>
 
     <script>
-      // localStorageからPython計算結果を取得
-      const data = JSON.parse(localStorage.getItem("result"));
+      const addressResult = JSON.parse(localStorage.getItem("address_result") || "null");
+      const kajuaveResult = JSON.parse(localStorage.getItem("kajuave_result") || "null");
+      const formInput = JSON.parse(localStorage.getItem("app_form_input") || "null");
 
-      if (data && typeof data.result === "number") {
-        document.getElementById("output").innerText = data.result;
+      const outputEl = document.getElementById("output");
+      const detailsEl = document.getElementById("details");
+
+      if (kajuaveResult && typeof kajuaveResult.weighted_result === "number") {
+        outputEl.innerText = `加重平均結果（kajuave）: ${kajuaveResult.weighted_result}`;
       } else {
-        document.getElementById("output").innerText =
-          "結果が取得できませんでした。";
+        outputEl.innerText = "kajuave の結果を取得できませんでした";
       }
 
-      // 戻るボタンで入力画面に戻る
+      const lines = [];
+      if (addressResult) {
+        lines.push("=== 住所解析結果 ===");
+        lines.push(`address1: ${addressResult.address1 ?? ""}`);
+        lines.push(`lat1, lon1: ${addressResult.lat1 ?? ""}, ${addressResult.lon1 ?? ""}`);
+        lines.push(`ku: ${addressResult.ku ?? ""}`);
+        lines.push(`hanzai.number: ${addressResult.hanzai_number ?? ""}`);
+        lines.push(`mini.score_hanzai: ${addressResult["mini.score_hanzai"] ?? ""}`);
+        lines.push(`jiko.number: ${addressResult.jiko_number ?? ""}`);
+        lines.push(`mini.score_jiko: ${addressResult["mini.score_jiko"] ?? ""}`);
+        lines.push(`mini.score_station: ${addressResult["mini.score_station"] ?? ""}`);
+        lines.push(`mini.number: ${addressResult["mini.number"] ?? ""}`);
+        lines.push(`mini.score: ${addressResult["mini.score"] ?? ""}`);
+        lines.push(`score (seikika / anzen): ${addressResult.score ?? ""}`);
+        lines.push(`score (seikika / station): ${addressResult.station_score ?? ""}`);
+        lines.push(`station: ${addressResult.station_name ?? ""} / ${addressResult.station_distance_m ?? ""} m`);
+        lines.push(`nearest public facility distance: ${addressResult.kokyou_kyori_m ?? ""} m`);
+        if (addressResult.error) lines.push(`error: ${addressResult.error}`);
+      }
+
+      if (kajuaveResult) {
+        lines.push("");
+        lines.push("=== kajuave結果 ===");
+        lines.push(`criteria: ${(kajuaveResult.criteria || []).join(", ")}`);
+        lines.push(`scores: ${(kajuaveResult.scores || []).join(", ")}`);
+        lines.push(`weights: ${(kajuaveResult.weights || []).join(", ")}`);
+        lines.push(`weighted_result: ${kajuaveResult.weighted_result ?? ""}`);
+      }
+
+      if (formInput) {
+        lines.push("");
+        lines.push("=== 入力した重要度 ===");
+        lines.push(`anzen: ${formInput.anzen ?? ""}`);
+        lines.push(`station: ${formInput.station ?? ""}`);
+      }
+
+      detailsEl.innerText = lines.join("\n");
+
       document.getElementById("back-btn").addEventListener("click", () => {
         window.location.href = "app.html";
       });

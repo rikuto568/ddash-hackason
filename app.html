@@ -11,39 +11,39 @@
     <input type="text" placeholder="住所を入力してください" />
 
     <h3>生活利便性</h3>
-    <label><input type="radio" name="useful" value="first" />1</label>
-    <label><input type="radio" name="useful" value="second" />2</label>
-    <label><input type="radio" name="useful" value="third" />3</label>
-    <label><input type="radio" name="useful" value="fourth" />4</label>
-    <label><input type="radio" name="useful" value="fifth" />5</label>
+    <label><input type="radio" name="useful" value="1" />1</label>
+    <label><input type="radio" name="useful" value="2" />2</label>
+    <label><input type="radio" name="useful" value="3" />3</label>
+    <label><input type="radio" name="useful" value="4" />4</label>
+    <label><input type="radio" name="useful" value="5" />5</label>
 
-    <h3>安全性</h3>
-    <label><input type="radio" name="safety" value="first" />1</label>
-    <label><input type="radio" name="safety" value="second" />2</label>
-    <label><input type="radio" name="safety" value="third" />3</label>
-    <label><input type="radio" name="safety" value="fourth" />4</label>
-    <label><input type="radio" name="safety" value="fifth" />5</label>
+    <h3>安全性（anzen）</h3>
+    <label><input type="radio" name="anzen" value="1" />1</label>
+    <label><input type="radio" name="anzen" value="2" />2</label>
+    <label><input type="radio" name="anzen" value="3" />3</label>
+    <label><input type="radio" name="anzen" value="4" />4</label>
+    <label><input type="radio" name="anzen" value="5" />5</label>
 
-    <h3>交通アクセス性</h3>
-    <label><input type="radio" name="access" value="first" />1</label>
-    <label><input type="radio" name="access" value="second" />2</label>
-    <label><input type="radio" name="access" value="third" />3</label>
-    <label><input type="radio" name="access" value="fourth" />4</label>
-    <label><input type="radio" name="access" value="fifth" />5</label>
+    <h3>交通アクセス性（station）</h3>
+    <label><input type="radio" name="station" value="1" />1</label>
+    <label><input type="radio" name="station" value="2" />2</label>
+    <label><input type="radio" name="station" value="3" />3</label>
+    <label><input type="radio" name="station" value="4" />4</label>
+    <label><input type="radio" name="station" value="5" />5</label>
 
     <h3>環境快適性</h3>
-    <label><input type="radio" name="comfort" value="first" />1</label>
-    <label><input type="radio" name="comfort" value="second" />2</label>
-    <label><input type="radio" name="comfort" value="third" />3</label>
-    <label><input type="radio" name="comfort" value="fourth" />4</label>
-    <label><input type="radio" name="comfort" value="fifth" />5</label>
+    <label><input type="radio" name="comfort" value="1" />1</label>
+    <label><input type="radio" name="comfort" value="2" />2</label>
+    <label><input type="radio" name="comfort" value="3" />3</label>
+    <label><input type="radio" name="comfort" value="4" />4</label>
+    <label><input type="radio" name="comfort" value="5" />5</label>
 
     <h3>教育充実度</h3>
-    <label><input type="radio" name="service" value="first" />1</label>
-    <label><input type="radio" name="service" value="second" />2</label>
-    <label><input type="radio" name="service" value="third" />3</label>
-    <label><input type="radio" name="service" value="fourth" />4</label>
-    <label><input type="radio" name="service" value="fifth" />5</label>
+    <label><input type="radio" name="service" value="1" />1</label>
+    <label><input type="radio" name="service" value="2" />2</label>
+    <label><input type="radio" name="service" value="3" />3</label>
+    <label><input type="radio" name="service" value="4" />4</label>
+    <label><input type="radio" name="service" value="5" />5</label>
 
     <!-- ここのbrは仮で -->
     <br /><br />
@@ -52,6 +52,16 @@
 </html>
 <!-- グーグルスタジオUI -->
 <script>
+  function weightedScore(scores, weights) {
+    if (!Array.isArray(scores) || !Array.isArray(weights)) throw new Error("scores/weights must be arrays");
+    if (scores.length !== weights.length) throw new Error("scores と weights の長さが一致しません");
+    if (scores.length === 0) throw new Error("scores が空です");
+    const totalWeight = weights.reduce((a, b) => a + Number(b), 0);
+    if (totalWeight <= 0) throw new Error("weights の合計は 0 より大きくしてください");
+    const sum = scores.reduce((acc, score, i) => acc + Number(score) * Number(weights[i]), 0);
+    return sum / totalWeight;
+  }
+
   document.getElementById("submit").addEventListener("click", async () => {
     const address = document.querySelector('input[type="text"]').value.trim();
 
@@ -64,7 +74,7 @@
     }
 
     // ラジオチェック
-    const radioGroups = ["useful", "safety", "access", "comfort", "service"];
+    const radioGroups = ["useful", "anzen", "station", "comfort", "service"];
     const data = {}; // Pythonに送るデータ
     for (const groupName of radioGroups) {
       const checked = document.querySelector(
@@ -80,35 +90,58 @@
     // 住所も送る
     data.address = address;
 
-    // Pythonに送信（Flaskなどのサーバーで受け取る想定）
-    fetch("http://127.0.0.1:5000/calc", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result); // Python側で計算した結果
-        // ここで result.html に移動したり、値を表示する処理に使える
-        window.location.href = "result.html";
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("送信に失敗しました");
+    try {
+      // 住所解析 + 各種スコア（address_submit_server.py -> address1_where.py 等）
+      const addrRes = await fetch("http://127.0.0.1:8000/submit-json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address }),
       });
-  });
-  // 武田君の処理
-   try {
-      const response = await fetch("http://127.0.0.1:8000/result");
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+      if (!addrRes.ok) {
+        throw new Error(`address server error: ${addrRes.status}`);
+      }
+      const addressResult = await addrRes.json();
+
+      // 今ある基準は anzen / station。kajuave.py(/weighted) で集約（失敗時は同式でフォールバック）
+      const anzenScore = Number(addressResult.score);
+      const stationScore = Number(addressResult.station_score);
+      const anzenWeight = Number(data.anzen);
+      const stationWeight = Number(data.station);
+
+      let kajuaveResult = null;
+      if (!Number.isNaN(anzenScore) && !Number.isNaN(stationScore)) {
+        const scores = [anzenScore, stationScore];
+        const weights = [anzenWeight, stationWeight];
+        let weightedResult = null;
+
+        try {
+          const kajuaveRes = await fetch("http://127.0.0.1:5000/weighted", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ scores, weights }),
+          });
+          if (!kajuaveRes.ok) throw new Error(`kajuave server error: ${kajuaveRes.status}`);
+          const kajuaveJson = await kajuaveRes.json();
+          weightedResult = Number(kajuaveJson.weighted_result);
+        } catch (_kajuaveErr) {
+          weightedResult = Number(weightedScore(scores, weights).toFixed(4));
+        }
+
+        kajuaveResult = {
+          criteria: ["anzen", "station"],
+          scores,
+          weights,
+          weighted_result: Number(Number(weightedResult).toFixed(4)),
+        };
       }
 
-      const data = await response.json();
-      localStorage.setItem("result", JSON.stringify(data));
+      localStorage.setItem("app_form_input", JSON.stringify(data));
+      localStorage.setItem("address_result", JSON.stringify(addressResult));
+      localStorage.setItem("kajuave_result", JSON.stringify(kajuaveResult));
       window.location.href = "result.html";
-    } catch (error) {
-      console.error(error);
-      alert("計算結果の取得に失敗しました。サーバー起動状態を確認してください。");
+    } catch (err) {
+      console.error(err);
+      alert("送信に失敗しました。address_submit_server.py が起動しているか確認してください。");
     }
+  });
 </script>
