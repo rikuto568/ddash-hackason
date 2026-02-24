@@ -1,54 +1,41 @@
-# ddash-hackason (portable setup)
+# ddash-hackason
 
-## What this project needs on another PC
-- Python 3.11+ (3.10+ should also work)
-- Google Maps API key (`Geocoding API` enabled)
+## 他PCで使うとき（最低限）
 
-## Setup
+1. Python を入れる（推奨 `3.11`）
+2. このフォルダを開く
+3. 仮想環境を作る
+
 ```powershell
-cd C:\path\to\ddash-hackason
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
+
+4. ライブラリを入れる
+
+```powershell
 pip install -r requirements.txt
-Copy-Item .env.example .env
 ```
 
-`.env` に `GOOGLE_MAPS_API_KEY` を設定してください。
+## 起動（必要なもの）
 
-## Run (backend for address parsing / scores)
+### 1. 住所解析サーバー
+
 ```powershell
 python address_submit_server.py
 ```
 
-Default: `http://127.0.0.1:8000`
-
-環境変数で変更可能:
-```powershell
-$env:ADDRESS_SERVER_HOST="0.0.0.0"
-$env:ADDRESS_SERVER_PORT="8000"
-python address_submit_server.py
-```
-
-## Run (kajuave API, optional but recommended)
-`/weighted` を使うだけなら `calculateseg.py` がなくても起動可能です。
+### 2. kajuave サーバー（加重平均 API）
 
 ```powershell
 uvicorn kajuave:app --host 127.0.0.1 --port 5000
 ```
 
-## Frontend (`app.html`)
-- Live Server でも動作します
-- デフォルト接続先は現在のPCのホスト名ベースで推定:
-  - address API: `http://<current-host>:8000`
-  - kajuave API: `http://<current-host>:5000`
+### 3. フロント
 
-必要ならブラウザコンソールで上書き:
-```js
-localStorage.setItem("ADDRESS_API_BASE", "http://127.0.0.1:8000");
-localStorage.setItem("KAJUAVE_API_BASE", "http://127.0.0.1:5000");
-```
+- `app.html` を Live Server で開く（または普通に開く）
 
-## Git push / shared use notes
-- `.env` は `.gitignore` 済みなので push しない
-- `dataset/*.csv`, `score/kijun.csv` は repo に含める
-- 他PCでは `.env` だけ作れば同じ構成で動かせます
+## 補足
+
+- Google Maps Geocoding API を使う場合は `.env` に API キー設定が必要です（`.env.example` 参照）。
+- このPCでは `Python 3.13.3` で `.venv` 作成と `pip install -r requirements.txt` の完了を確認済みです。
