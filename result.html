@@ -21,7 +21,7 @@
       // localStorageからPython計算結果を取得
       const data = JSON.parse(localStorage.getItem("result"));
 
-      if (data && data.result) {
+      if (data && typeof data.result === "number") {
         document.getElementById("output").innerText = data.result;
       } else {
         document.getElementById("output").innerText =

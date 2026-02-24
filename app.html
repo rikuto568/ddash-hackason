@@ -52,7 +52,7 @@
 </html>
 <!-- グーグルスタジオUI -->
 <script>
-  document.getElementById("submit").addEventListener("click", () => {
+  document.getElementById("submit").addEventListener("click", async () => {
     const address = document.querySelector('input[type="text"]').value.trim();
 
     // 住所が "京都" で始まらなければ無効
@@ -74,7 +74,18 @@
       }
     }
 
-    // 有効なら画面遷移
-    window.location.href = "result.html";
+    try {
+      const response = await fetch("http://127.0.0.1:8000/result");
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      localStorage.setItem("result", JSON.stringify(data));
+      window.location.href = "result.html";
+    } catch (error) {
+      console.error(error);
+      alert("計算結果の取得に失敗しました。サーバー起動状態を確認してください。");
+    }
   });
 </script>
