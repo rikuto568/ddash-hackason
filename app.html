@@ -97,4 +97,18 @@
         alert("送信に失敗しました");
       });
   });
+  // 武田君の処理
+   try {
+      const response = await fetch("http://127.0.0.1:8000/result");
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      localStorage.setItem("result", JSON.stringify(data));
+      window.location.href = "result.html";
+    } catch (error) {
+      console.error(error);
+      alert("計算結果の取得に失敗しました。サーバー起動状態を確認してください。");
+    }
 </script>
