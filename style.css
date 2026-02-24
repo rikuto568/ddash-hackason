@@ -95,7 +95,6 @@ input[value="third"], input[value="3"] {
     transform: scale(2.0); /* 1.0 → 1.2倍に少しだけ大きく */
 }
 
-
 /* =========================================
    ボタンの設定（index.htmlの#btn と app.htmlの#submit 共通）
    ========================================= */
@@ -117,16 +116,16 @@ input[value="third"], input[value="3"] {
     transition: all 0.1s; 
 }
 
-#submit {
+#submit{  /* ← ここに #back-btn を追加！ */
     display: block;
     margin: 1px auto; 
     width: 80%; 
-    max-width: 400px; /* 入力欄と同じ横長サイズに統一 */
-    padding: 35px 0; 
+    max-width: 200px; /* 入力欄と同じ横長サイズに統一 */
+    padding: 24px 0; 
 
     background-color: #ADDAD0; /* ミントグリーン */
     color: #046365; /* 深いグリーン */
-    font-size: 18px;
+    font-size: 35px;
     font-weight: bold;
     border: none;
     border-radius: 30px; 
@@ -134,21 +133,32 @@ input[value="third"], input[value="3"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
     transition: all 0.1s; 
 }
+
 #back-btn {  /* ← ここに #back-btn を追加！ */
     display: block;
-    margin: 40px auto; 
-    /* ... (中略) ... */
+    margin: 200px auto; 
+    width: 80%; 
+    max-width: 200px; /* 入力欄と同じ横長サイズに統一 */
+    padding: 24px 0; 
+
+    background-color: #ADDAD0; /* ミントグリーン */
+    color: #046365; /* 深いグリーン */
+    font-size: 35px;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px; 
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
     transition: all 0.1s; 
 }
-#back-btn:active { /* ← ここにも追加！ */
-    transform: translateY(2px); 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
-}
+
+
 /* ボタンが押された瞬間のデザイン（へこむ動き） */
-#btn:active, #submit:active {
+#btn:active, #submit:active , #back-btn:active { /* ← ここにも追加！ */
     transform: translateY(2px); 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
 }
+
 
 /* =========================================
    レスポンシブデザイン（スマホ向けの調整）
