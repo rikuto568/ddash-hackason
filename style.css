@@ -22,7 +22,7 @@ body {
    見出しの文字設定
    ========================================= */
 /* 見出しの色をすべて統一 */
-h1, h2, h3 {
+h1, h2 {
     color: #B7445A; /* ローズ色 */
 }
 
@@ -30,10 +30,13 @@ h1 { margin-bottom: 80px; } /* index.htmlのタイトル用 */
 h2 {margin-top: 0px;
      margin-bottom: 30px;
      font-size: 24px; } /* app.htmlの数字を選んでください用 */
-h3 { margin-top: 5px; margin-bottom: 5px;
+h3 {color: #b766ab;
+     margin-top: 5px; margin-bottom: 5px;
      font-size: 20px; 
     } /* app.htmlの安全性など用 */
-
+calicurate_result{margin: 20px 0px;
+     font-size: 80px; 
+    } /* result.htmlの計算結果用 */
 /* =========================================
    入力フォームの設定 (app.html用)
    ========================================= */
@@ -107,7 +110,7 @@ input[value="third"], input[value="3"] {
 
     background-color: #ADDAD0; /* ミントグリーン */
     color: #046365; /* 深いグリーン */
-    font-size: 18px;
+    font-size: 35px;
     font-weight: bold;
     border: none;
     border-radius: 30px; 
@@ -159,42 +162,72 @@ input[value="third"], input[value="3"] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
 }
 
-
 /* =========================================
-   レスポンシブデザイン（スマホ向けの調整）
+   レスポンシブデザイン（スマートフォン・タブレット向け）
+   画面幅が768px以下の場合に適用される魔法
    ========================================= */
-/* 画面の横幅が 600px 以下（スマホサイズ）の時にだけ発動する魔法 */
-@media screen and (max-width: 600px) {
-    
-    /* 1. 画面の端っこの余白を少し狭くして、スマホの画面を広く使う */
+@media screen and (max-width: 768px) {
+    /* 画面全体・文字サイズの調整 */
     body {
-        padding: 20px 10px;
+        font-size: 18px; /* 基本の文字サイズを小さくして読みやすく */
+        padding: 40px 10px; /* 上下の余白を狭めて画面を広く使う */
     }
 
-    /* 2. 見出しの文字サイズをスマホに合わせて少し小さく */
+    /* 見出しサイズの調整 */
     h1 {
-        font-size: 26px;
+        margin-bottom: 40px;
+        font-size: 28px;
     }
     h2 {
         font-size: 20px;
+        margin-bottom: 20px;
+    }
+    h3 {
+        font-size: 18px;
     }
 
-    /* 3. ラジオボタンが横にはみ出さないよう、倍率を少しだけ下げる */
-    input[value="first"], input[value="fifth"], input[value="1"], input[value="5"] {
-        transform: scale(2.0); /* PCでは2.5倍でしたが、スマホでは2.0倍に */
-    }
-    
-    input[value="second"], input[value="fourth"], input[value="2"], input[value="4"] {
-        transform: scale(1.5); /* 1.8倍 → 1.5倍に */
-    }
-    
-    input[value="third"], input[value="3"] {
-        transform: scale(1.0); /* 1.2倍 → 標準サイズ(1.0)に */
+    /* 計算結果の数字（80pxだとスマホではみ出るため縮小） */
+    .calicurate_result {
+        margin: 30px 0;
+        font-size: 50px; 
     }
 
-    /* 4. ラジオボタン同士の横の隙間も、スマホ用に少し狭くする */
+    /* =========================================
+       ラジオボタンと数字のスマホ向け調整
+       ========================================= */
     label {
-        margin-left: 9px; /* 17px → 9pxに */
-        margin-right: 9px; /* 20px → 12pxに */
+        margin-left: 8px;
+        margin-right: 8px; /* 横幅に1列で収まるように隙間を狭くする */
+        font-size: 13px;
+    }
+
+    /* スマホ画面に合わせてラジオボタンの「デカデカ効果」を少しマイルドに */
+    input[value="first"], input[value="fifth"], input[value="1"], input[value="5"] {
+        transform: scale(2.5); /* 3.4だとスマホで重なるため調整 */
+    }
+    input[value="second"], input[value="fourth"], input[value="2"], input[value="4"] {
+        transform: scale(2.0); 
+    }
+    input[value="third"], input[value="3"] {
+        transform: scale(1.5); 
+    }
+
+    /* =========================================
+       各種ボタンのスマホ向け調整
+       ========================================= */
+    #btn {
+        padding: 20px 0;
+        font-size: 16px;
+        margin: 20px auto;
+    }
+
+    #submit, #back-btn {
+        padding: 15px 0;
+        font-size: 24px;
+        max-width: 150px; /* ボタンも少しコンパクトに */
+    }
+
+    #back-btn {
+        margin: 80px auto; /* スマホだと200pxは間が空きすぎるので詰める */
     }
 }
