@@ -1,0 +1,979 @@
+﻿<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基準編集ページ</title>
+    <style>
+      :root {
+        --bg: #f9d2d2;
+        --grid: rgba(255, 255, 255, 0.35);
+        --text: #374151;
+        --muted: #6b7280;
+        --title: #b7445a;
+        --accent: #b766ab;
+        --mint: #addad0;
+        --mint-text: #046365;
+        --card: #ffffff;
+        --line: #ebc6cf;
+        --warn: #9a4b63;
+        --error: #b91c1c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "Zen Maru Gothic", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+        background-color: var(--bg);
+        background-image:
+          linear-gradient(var(--grid) 50%, transparent 50%),
+          linear-gradient(90deg, var(--grid) 50%, transparent 50%);
+        background-size: 24px 24px;
+        padding: 18px 12px 32px;
+      }
+
+      .wrap {
+        width: min(1180px, 96vw);
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .pill-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--mint-text);
+        border: 1px solid #d8e8e3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      #status {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+      }
+
+      .hero {
+        padding: 16px 18px;
+      }
+
+      .hero h1 {
+        margin: 0 0 8px;
+        color: var(--title);
+        font-size: 26px;
+      }
+
+      .hero .lead {
+        margin: 0;
+        color: var(--accent);
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .hero .help {
+        margin: 10px 0 0;
+        font-size: 13px;
+        color: #7a3f55;
+        line-height: 1.5;
+      }
+
+      .toolbar {
+        margin: 12px 0;
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        position: sticky;
+        top: 8px;
+        z-index: 30;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      button {
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 700;
+        font-size: 13px;
+        background: #fff;
+        color: var(--mint-text);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+      }
+
+      button.primary {
+        background: var(--mint);
+      }
+
+      button:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      button:disabled {
+        opacity: 0.65;
+        cursor: default;
+      }
+
+      .toolbar .hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .groups {
+        display: grid;
+        gap: 12px;
+      }
+
+      details.group {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+      }
+
+      details.group[open] {
+        box-shadow: 0 6px 14px rgba(183, 68, 90, 0.08);
+      }
+
+      summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        background: #fffafb;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .sum-title {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .sum-title strong {
+        font-size: 15px;
+      }
+
+      .sum-title small {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .sum-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .badge {
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .badge.count {
+        background: #eef6f4;
+        color: var(--mint-text);
+      }
+
+      .badge.issue {
+        background: #fff1f2;
+        color: var(--warn);
+      }
+
+      .group-body {
+        padding: 12px;
+      }
+
+      .group-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .group-actions button {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .table-wrap {
+        overflow: auto;
+        border: 1px solid #f1d7dd;
+        border-radius: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 940px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #f3e5e9;
+        padding: 8px;
+        font-size: 13px;
+        vertical-align: top;
+        background: #fff;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #fff5f8;
+        color: #7a3f55;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      td.point {
+        width: 88px;
+        text-align: center;
+      }
+
+      .point-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 54px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #fff4ea;
+        color: #b45309;
+        font-weight: 700;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        border: 2px solid #debdd9;
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 13px;
+        outline: none;
+        background: #fff;
+      }
+
+      input:focus {
+        border-color: #d48bb0;
+      }
+
+      .minmax {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .arrow {
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .unit {
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .max-block {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .max-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .toggle input {
+        width: auto;
+        margin: 0;
+        transform: none;
+      }
+
+      .preview {
+        min-width: 320px;
+        color: #6b3f56;
+        line-height: 1.45;
+      }
+
+      .row-tools {
+        width: 140px;
+      }
+
+      .row-tools button {
+        padding: 7px 10px;
+        font-size: 12px;
+        width: 100%;
+        white-space: nowrap;
+      }
+
+      .empty {
+        background: #fff;
+        border: 1px dashed var(--line);
+        border-radius: 14px;
+        color: var(--muted);
+        text-align: center;
+        padding: 24px;
+      }
+
+      .footnote {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 760px) {
+        body {
+          padding: 12px 8px 24px;
+        }
+        .hero h1 {
+          font-size: 22px;
+        }
+        .hero .lead {
+          font-size: 15px;
+        }
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .toolbar {
+          top: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="pill-link" href="./app.html">← 入力画面へ戻る</a>
+        <div id="status">読み込み中...</div>
+      </div>
+
+      <section class="card hero">
+        <h1>基準編集ページ</h1>
+        <p class="lead">それぞれの基準を10点満点で評価してください。</p>
+        <p class="help">
+          改善点:
+          「上限なし」は <code>m</code> を直接入力せずチェックで設定できます。終了値を入れると、次の行の開始値は自動でつながるように補助します。
+          保存時は <code>score/kijun.csv</code> に上書きします。
+        </p>
+      </section>
+
+      <div class="toolbar">
+        <button id="reloadBtn" type="button">再読み込み</button>
+        <button id="saveBtn" type="button" class="primary">保存する</button>
+        <span class="hint">各項目は10行固定（1〜10点）です</span>
+      </div>
+
+      <div id="groups" class="groups"></div>
+    </div>
+
+    <script>
+      const pageProtocol =
+        location.protocol === "http:" || location.protocol === "https:"
+          ? location.protocol
+          : "http:";
+      const apiBase =
+        localStorage.getItem("ADDRESS_API_BASE") ||
+        `${pageProtocol}//${location.hostname || "127.0.0.1"}:8000`;
+
+      const TARGET_ROWS_PER_GROUP = 10;
+
+      const labelMap = {
+        hanzai: "犯罪件数",
+        jiko: "事故件数",
+        eki: "駅までの距離",
+        station: "駅までの距離",
+        population: "人口",
+        park: "公園までの距離",
+        supermarket: "スーパーまでの距離",
+        library: "図書館の数",
+        cityoffices: "市役所・区役所までの距離",
+        kindergarden: "幼稚園の数",
+        eye: "眼科の数",
+        gym: "体育施設の数",
+        daycare: "保育施設の数",
+        afterschool: "学童関連の数",
+        cultural: "文化施設の数",
+        hospital: "病院までの距離",
+      };
+
+      const distanceKeys = new Set([
+        "eki",
+        "station",
+        "park",
+        "supermarket",
+        "cityoffices",
+        "hospital",
+      ]);
+
+      const countUnitMap = {
+        hanzai: "件",
+        jiko: "件",
+        population: "人",
+      };
+
+      let currentRows = [];
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+
+      function setStatus(message, type = "info") {
+        const el = document.getElementById("status");
+        el.textContent = message;
+        if (type === "error") el.style.color = "#b91c1c";
+        else if (type === "success") el.style.color = "#046365";
+        else if (type === "warn") el.style.color = "#9a4b63";
+        else el.style.color = "#6b7280";
+      }
+
+      function displayName(key) {
+        return labelMap[key] || key;
+      }
+
+      function countUnit(key) {
+        return countUnitMap[key] || "件";
+      }
+
+      function isDistanceKey(key) {
+        return distanceKeys.has(key);
+      }
+
+      function isInfinityMax(value) {
+        return String(value ?? "").trim().toLowerCase() === "m";
+      }
+
+      function getStepFromText(text) {
+        const s = String(text ?? "").trim();
+        if (!s) return 1;
+        if (!/^[-+]?\d+(\.\d+)?$/.test(s)) return 1;
+        const m = s.match(/\.(\d+)/);
+        if (!m) return 1;
+        return Number(`0.${"0".repeat(Math.max(0, m[1].length - 1))}1`);
+      }
+
+      function addStepText(text) {
+        const s = String(text ?? "").trim();
+        if (!/^[-+]?\d+(\.\d+)?$/.test(s)) return "";
+        const num = Number(s);
+        if (!Number.isFinite(num)) return "";
+        const step = getStepFromText(s);
+        const decimalLen = (s.split(".")[1] || "").length;
+        const next = num + step;
+        const fixed = decimalLen > 0 ? next.toFixed(decimalLen) : String(Math.trunc(next));
+        return fixed.replace(/\.0+$/, "");
+      }
+
+      function groupRows(rows) {
+        const groups = new Map();
+        for (const row of rows) {
+          const key = String(row.name || "").trim();
+          if (!key) continue;
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(row);
+        }
+        for (const [, list] of groups.entries()) {
+          list.sort((a, b) => {
+            const sa = Number(a["mini.score"]);
+            const sb = Number(b["mini.score"]);
+            const va = Number.isFinite(sa) ? sa : -Infinity;
+            const vb = Number.isFinite(sb) ? sb : -Infinity;
+            if (vb !== va) return vb - va;
+            return Number(a.id || 0) - Number(b.id || 0);
+          });
+        }
+        return [...groups.entries()];
+      }
+
+      function normalizeRowsToTen(rows) {
+        const grouped = groupRows(Array.isArray(rows) ? rows : []);
+        const normalized = [];
+        let nextTempId = 100000;
+
+        for (const [name, list] of grouped) {
+          const copied = list.map((row) => ({
+            id: String(row.id ?? ""),
+            name,
+            min: String(row.min ?? ""),
+            max: String(row.max ?? ""),
+            "mini.score": String(row["mini.score"] ?? ""),
+          }));
+
+          while (copied.length < TARGET_ROWS_PER_GROUP) {
+            const point = TARGET_ROWS_PER_GROUP - copied.length;
+            copied.push({
+              id: String(nextTempId++),
+              name,
+              min: "",
+              max: "",
+              "mini.score": String(point),
+            });
+          }
+
+          normalized.push(...copied.slice(0, TARGET_ROWS_PER_GROUP));
+        }
+
+        return normalized;
+      }
+
+      function rangePhrase(row) {
+        const key = String(row.name || "");
+        const min = String(row.min ?? "").trim();
+        const max = String(row.max ?? "").trim();
+        const score = String(row["mini.score"] ?? "").trim();
+        const dist = isDistanceKey(key);
+
+        if (!min && !max) return "未入力";
+
+        if (dist) {
+          if (isInfinityMax(max) || !max) return `${min || "?"}m以上なら${score || "?"}点`;
+          return `${min || "?"}m〜${max || "?"}mなら${score || "?"}点`;
+        }
+
+        const unit = countUnit(key);
+        if (key === "population") {
+          if (isInfinityMax(max) || !max) return `区内の人口が${min || "?"}${unit}以上なら${score || "?"}点`;
+          return `区内の人口が${min || "?"}〜${max || "?"}${unit}なら${score || "?"}点`;
+        }
+        if (isInfinityMax(max) || !max) return `区内の数が${min || "?"}${unit}以上なら${score || "?"}点`;
+        return `区内の数が${min || "?"}〜${max || "?"}${unit}なら${score || "?"}点`;
+      }
+
+      function rowHasMissingValue(row) {
+        const min = String(row.min ?? "").trim();
+        const max = String(row.max ?? "").trim();
+        const score = String(row["mini.score"] ?? "").trim();
+        return !min || !max || !score;
+      }
+
+      function parseRangeForValidation(row) {
+        const minText = String(row.min ?? "").trim();
+        const maxText = String(row.max ?? "").trim();
+        const start = Number(minText);
+        const end = isInfinityMax(maxText) ? Number.POSITIVE_INFINITY : Number(maxText);
+        if (!Number.isFinite(start)) return null;
+        if (!(Number.isFinite(end) || end === Number.POSITIVE_INFINITY)) return null;
+        return { start, end };
+      }
+
+      function getOverlapInfo(rows) {
+        const overlaps = new Set();
+        for (let i = 0; i < rows.length; i++) {
+          const a = parseRangeForValidation(rows[i]);
+          if (!a) continue;
+          for (let j = i + 1; j < rows.length; j++) {
+            const b = parseRangeForValidation(rows[j]);
+            if (!b) continue;
+            if (a.start <= b.end && b.start <= a.end) {
+              overlaps.add(i);
+              overlaps.add(j);
+            }
+          }
+        }
+        return { rowCount: overlaps.size, hasOverlap: overlaps.size > 0 };
+      }
+
+      function groupIssueCount(rows) {
+        return rows.reduce((n, row) => n + (rowHasMissingValue(row) ? 1 : 0), 0);
+      }
+
+      function buildRowHtml(row, globalIndex, pointLabel) {
+        const key = String(row.name || "");
+        const dist = isDistanceKey(key);
+        const inf = isInfinityMax(row.max);
+        const unit = dist ? "m" : countUnit(key);
+        const maxValue = inf ? "" : String(row.max ?? "");
+
+        return `
+          <tr data-row-index="${globalIndex}">
+            <td class="point">
+              <span class="point-chip">${escapeHtml(pointLabel)}点</span>
+            </td>
+            <td>
+              <div class="minmax">
+                <input type="text" data-field="min" value="${escapeHtml(String(row.min ?? ""))}" placeholder="開始" />
+                <span class="unit">${escapeHtml(unit)}</span>
+                <div class="max-block">
+                  <div class="max-row">
+                    <input type="text" data-field="max" value="${escapeHtml(maxValue)}" placeholder="終了" ${inf ? "disabled" : ""} />
+                    <span class="unit">${dist ? "m" : unit}</span>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" data-field="max-infinity" ${inf ? "checked" : ""} />
+                    上限なし（以上）
+                  </label>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+            </td>
+            <td>
+              <input type="number" step="1" min="1" max="10" data-field="mini.score" value="${escapeHtml(String(row["mini.score"] ?? ""))}" />
+            </td>
+            <td class="preview" data-role="preview">${escapeHtml(rangePhrase(row))}</td>
+            <td class="row-tools">
+              <button type="button" data-action="copy-next-start">次の開始を自動</button>
+            </td>
+          </tr>
+        `;
+      }
+
+      function render() {
+        const container = document.getElementById("groups");
+        if (!currentRows.length) {
+          container.innerHTML = '<div class="empty">基準データがありません。</div>';
+          return;
+        }
+
+        const grouped = groupRows(currentRows);
+        container.innerHTML = grouped
+          .map(([key, rows], groupIndex) => {
+            const issueCount = groupIssueCount(rows);
+            const overlapInfo = getOverlapInfo(rows);
+            const rowHtml = rows
+              .map((row) => {
+                const globalIndex = currentRows.indexOf(row);
+                const pointLabel = String(row["mini.score"] ?? "") || "?";
+                return buildRowHtml(row, globalIndex, pointLabel);
+              })
+              .join("");
+
+            return `
+              <details class="group" data-group-name="${escapeHtml(key)}" ${groupIndex === 0 ? "open" : ""}>
+                <summary>
+                  <div class="sum-title">
+                    <strong>${escapeHtml(displayName(key))} <span style="color:#64748b;">(${escapeHtml(key)})</span></strong>
+                    <small>行のつながりを補助できます（終了値を入れたら次の開始値へ）</small>
+                  </div>
+                  <div class="sum-meta">
+                    <span class="badge count">${rows.length}行</span>
+                    ${issueCount ? `<span class="badge issue">未入力 ${issueCount}</span>` : ""}
+                    ${overlapInfo.hasOverlap ? `<span class="badge issue">重複 ${overlapInfo.rowCount}</span>` : ""}
+                  </div>
+                </summary>
+                <div class="group-body">
+                  <div class="group-actions">
+                    <button type="button" data-group-action="chain" data-group-name="${escapeHtml(key)}">この項目を連続にそろえる</button>
+                    <button type="button" data-group-action="scores10to1" data-group-name="${escapeHtml(key)}">点数を10→1で入れる</button>
+                  </div>
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>点数</th>
+                          <th>範囲（開始 / 終了）</th>
+                          <th>mini.score</th>
+                          <th>表示プレビュー</th>
+                          <th>補助</th>
+                        </tr>
+                      </thead>
+                      <tbody>${rowHtml}</tbody>
+                    </table>
+                  </div>
+                  <div class="footnote">
+                    「上限なし（以上）」にチェックすると、CSVでは自動的に <code>max=m</code> として保存されます。
+                  </div>
+                </div>
+              </details>
+            `;
+          })
+          .join("");
+
+        bindInputs();
+      }
+
+      function updateRowFromDom(tr) {
+        const rowIndex = Number(tr.dataset.rowIndex);
+        if (!Number.isInteger(rowIndex)) return;
+        const row = currentRows[rowIndex];
+        if (!row) return;
+
+        const minInput = tr.querySelector('[data-field="min"]');
+        const maxInput = tr.querySelector('[data-field="max"]');
+        const scoreInput = tr.querySelector('[data-field="mini.score"]');
+        const infinityInput = tr.querySelector('[data-field="max-infinity"]');
+
+        row.min = String(minInput?.value ?? "").trim();
+        row["mini.score"] = String(scoreInput?.value ?? "").trim();
+        row.max = infinityInput?.checked ? "m" : String(maxInput?.value ?? "").trim();
+
+        const preview = tr.querySelector('[data-role="preview"]');
+        if (preview) preview.textContent = rangePhrase(row);
+
+        const pointChip = tr.querySelector(".point-chip");
+        if (pointChip) pointChip.textContent = `${row["mini.score"] || "?"}点`;
+      }
+
+      function notifyOverlapIfAnyForRow(tr) {
+        const rowIndex = Number(tr.dataset.rowIndex);
+        if (!Number.isInteger(rowIndex)) return false;
+        const row = currentRows[rowIndex];
+        if (!row) return false;
+        const groupRowsNow = currentRows.filter((r) => String(r.name) === String(row.name));
+        const overlapInfo = getOverlapInfo(groupRowsNow);
+        if (overlapInfo.hasOverlap) {
+          setStatus(`${displayName(row.name)}の基準で重複があります`, "warn");
+          return true;
+        }
+        return false;
+      }
+
+      function autoFillNextStart(tr) {
+        const rowIndex = Number(tr.dataset.rowIndex);
+        if (!Number.isInteger(rowIndex)) return;
+        const row = currentRows[rowIndex];
+        if (!row) return;
+        if (isInfinityMax(row.max)) return;
+
+        const nextRow = currentRows[rowIndex + 1];
+        if (!nextRow || String(nextRow.name) !== String(row.name)) return;
+
+        const nextMin = addStepText(row.max);
+        if (!nextMin) return;
+
+        nextRow.min = nextMin;
+
+        const nextTr = document.querySelector(`tr[data-row-index="${rowIndex + 1}"]`);
+        if (nextTr) {
+          const minInput = nextTr.querySelector('[data-field="min"]');
+          if (minInput) minInput.value = nextMin;
+          updateRowFromDom(nextTr);
+        }
+      }
+
+      function chainGroup(groupName) {
+        const rows = currentRows.filter((r) => String(r.name) === String(groupName));
+        for (let i = 0; i < rows.length - 1; i++) {
+          const row = rows[i];
+          if (isInfinityMax(row.max)) break;
+          const nextMin = addStepText(row.max);
+          if (!nextMin) continue;
+          rows[i + 1].min = nextMin;
+        }
+        render();
+        setStatus(`${displayName(groupName)} を連続にそろえました`, "success");
+      }
+
+      function setScores10to1(groupName) {
+        const rows = currentRows.filter((r) => String(r.name) === String(groupName));
+        rows.forEach((row, idx) => {
+          row["mini.score"] = String(Math.max(1, 10 - idx));
+        });
+        render();
+        setStatus(`${displayName(groupName)} の点数を 10→1 に設定しました`, "success");
+      }
+
+      function bindInputs() {
+        document.querySelectorAll("tr[data-row-index]").forEach((tr) => {
+          tr.addEventListener("input", (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            updateRowFromDom(tr);
+
+            if (target.matches('[data-field="max"]')) {
+              autoFillNextStart(tr);
+            }
+            if (!notifyOverlapIfAnyForRow(tr)) {
+              setStatus("未保存の変更があります", "warn");
+            }
+          });
+
+          tr.querySelectorAll('[data-field="max-infinity"]').forEach((checkbox) => {
+            checkbox.addEventListener("change", () => {
+              const maxInput = tr.querySelector('[data-field="max"]');
+              if (maxInput) {
+                maxInput.disabled = checkbox.checked;
+                if (checkbox.checked) maxInput.value = "";
+              }
+              updateRowFromDom(tr);
+              if (!notifyOverlapIfAnyForRow(tr)) {
+                setStatus("未保存の変更があります", "warn");
+              }
+            });
+          });
+
+          tr.querySelectorAll('[data-action="copy-next-start"]').forEach((btn) => {
+            btn.addEventListener("click", () => {
+              autoFillNextStart(tr);
+              setStatus("次の行の開始値を補助入力しました", "success");
+            });
+          });
+        });
+
+        document.querySelectorAll("[data-group-action]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const action = btn.getAttribute("data-group-action");
+            const name = btn.getAttribute("data-group-name") || "";
+            if (!name) return;
+            if (action === "chain") chainGroup(name);
+            if (action === "scores10to1") setScores10to1(name);
+          });
+        });
+      }
+
+      function collectRowsFromDom() {
+        const rows = [...document.querySelectorAll("tr[data-row-index]")].map((tr) => {
+          const rowIndex = Number(tr.dataset.rowIndex);
+          const base = currentRows[rowIndex];
+          const infinity = tr.querySelector('[data-field="max-infinity"]')?.checked;
+          const maxInput = tr.querySelector('[data-field="max"]');
+          return {
+            id: String(base?.id ?? "").trim(),
+            name: String(base?.name ?? "").trim(),
+            min: String(tr.querySelector('[data-field="min"]')?.value ?? "").trim(),
+            max: infinity ? "m" : String(maxInput?.value ?? "").trim(),
+            "mini.score": String(tr.querySelector('[data-field="mini.score"]')?.value ?? "").trim(),
+          };
+        });
+        return rows;
+      }
+
+      function validateBeforeSave(rows) {
+        const counts = new Map();
+        const grouped = new Map();
+        for (const row of rows) {
+          const name = String(row.name || "");
+          counts.set(name, (counts.get(name) || 0) + 1);
+          if (!grouped.has(name)) grouped.set(name, []);
+          grouped.get(name).push(row);
+          if (!String(row.min || "").trim()) throw new Error(`${displayName(name)}: 開始値が空です`);
+          if (!String(row.max || "").trim()) throw new Error(`${displayName(name)}: 終了値/上限なしが未設定です`);
+          if (!String(row["mini.score"] || "").trim()) throw new Error(`${displayName(name)}: 点数が空です`);
+          const scoreNum = Number(row["mini.score"]);
+          if (!Number.isFinite(scoreNum) || !Number.isInteger(scoreNum) || scoreNum < 1 || scoreNum > 10) {
+            throw new Error(`${displayName(name)}: 点数は1〜10の整数で入力してください`);
+          }
+        }
+        for (const [name, count] of counts.entries()) {
+          if (count !== TARGET_ROWS_PER_GROUP) {
+            throw new Error(`${displayName(name)} は ${TARGET_ROWS_PER_GROUP}行必要です（現在 ${count}行）`);
+          }
+        }
+        for (const [name, groupRowsList] of grouped.entries()) {
+          if (getOverlapInfo(groupRowsList).hasOverlap) {
+            throw new Error(`${displayName(name)}の基準の重複を修正してください`);
+          }
+        }
+      }
+
+      async function loadRows() {
+        setStatus("読み込み中...");
+        const res = await fetch(`${apiBase}/api/kijun`);
+        if (!res.ok) throw new Error(`load failed: ${res.status}`);
+        const data = await res.json();
+        currentRows = normalizeRowsToTen(Array.isArray(data.rows) ? data.rows : []);
+        render();
+        setStatus(`読み込み完了（${currentRows.length}行）`, "success");
+      }
+
+      async function saveRows() {
+        const btn = document.getElementById("saveBtn");
+        btn.disabled = true;
+        setStatus("保存中...");
+        try {
+          const rows = collectRowsFromDom();
+          validateBeforeSave(rows);
+
+          const res = await fetch(`${apiBase}/api/kijun`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rows }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || data.ok === false) {
+            throw new Error(data.error || `save failed: ${res.status}`);
+          }
+
+          currentRows = normalizeRowsToTen(Array.isArray(data.rows) ? data.rows : rows);
+          render();
+          setStatus("保存しました（kijun.csv を更新）", "success");
+        } catch (e) {
+          console.error(e);
+          setStatus(`保存失敗: ${e.message || e}`, "error");
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      document.getElementById("reloadBtn").addEventListener("click", () => {
+        loadRows().catch((e) => {
+          console.error(e);
+          setStatus(`読み込み失敗: ${e.message || e}`, "error");
+        });
+      });
+
+      document.getElementById("saveBtn").addEventListener("click", saveRows);
+
+      loadRows().catch((e) => {
+        console.error(e);
+        setStatus(`読み込み失敗: ${e.message || e}`, "error");
+      });
+    </script>
+  </body>
+</html>
+

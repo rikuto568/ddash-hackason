@@ -18,11 +18,14 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 HTML_PATH = BASE_DIR / "address.html"
+INDEX_HTML_PATH = BASE_DIR / "index.html"
 APP_HTML_PATH = BASE_DIR / "app.html"
 RESULT_HTML_PATH = BASE_DIR / "result.html"
+KIJUN_EDIT_HTML_PATH = BASE_DIR / "kijun_edit.html"
 STYLE_CSS_PATH = BASE_DIR / "style.css"
 SCRIPT_JS_PATH = BASE_DIR / "script.js"
 RESULT_CSV_PATH = BASE_DIR / "address1_result.csv"
+KIJUN_CSV_PATH = BASE_DIR / "score" / "kijun.csv"
 KOKYOU_SAITAN_PATH = BASE_DIR / "dataset.kokyou_saitan.py"
 HANZAI_PATH = BASE_DIR / "score" / "mini.score" / "hanzai.py"
 JIKO_PATH = BASE_DIR / "score" / "mini.score" / "jiko.py"
@@ -52,6 +55,86 @@ def load_module_from_path(name: str, path: Path):
 
 
 _MODULE_CACHE: dict[str, object] = {}
+
+KIJUN_FIELDS = ["id", "name", "min", "max", "mini.score"]
+
+
+def load_kijun_rows() -> list[dict[str, str]]:
+    if not KIJUN_CSV_PATH.exists():
+        return []
+    with KIJUN_CSV_PATH.open("r", newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        rows: list[dict[str, str]] = []
+        for row in reader:
+            rows.append({field: str(row.get(field, "")).strip() for field in KIJUN_FIELDS})
+        return rows
+
+
+def save_kijun_rows(rows: list[dict[str, object]]) -> None:
+    def _parse_num(text: str) -> float | None:
+        try:
+            return float(text)
+        except Exception:
+            return None
+
+    def _has_overlap(group_rows: list[dict[str, str]]) -> bool:
+        intervals: list[tuple[float, float]] = []
+        for row in group_rows:
+            min_text = str(row.get("min", "")).strip()
+            max_text = str(row.get("max", "")).strip()
+            start = _parse_num(min_text)
+            end = float("inf") if max_text.lower() == "m" else _parse_num(max_text)
+            if start is None or end is None:
+                continue
+            intervals.append((start, end))
+        for i in range(len(intervals)):
+            a_start, a_end = intervals[i]
+            for j in range(i + 1, len(intervals)):
+                b_start, b_end = intervals[j]
+                if a_start <= b_end and b_start <= a_end:
+                    return True
+        return False
+
+    normalized: list[dict[str, str]] = []
+    group_counts: dict[str, int] = {}
+    grouped_rows: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("each row must be an object")
+        name = str(row.get("name", "")).strip()
+        if not name:
+            raise ValueError("name is required")
+        min_value = str(row.get("min", "")).strip()
+        max_value = str(row.get("max", "")).strip()
+        score_value = str(row.get("mini.score", "")).strip()
+        if min_value == "" or max_value == "" or score_value == "":
+            raise ValueError(f"min/max/mini.score is required ({name})")
+
+        group_counts[name] = group_counts.get(name, 0) + 1
+        normalized_row = {
+            "id": "",
+            "name": name,
+            "min": min_value,
+            "max": max_value,
+            "mini.score": score_value,
+        }
+        normalized.append(normalized_row)
+        grouped_rows.setdefault(name, []).append(normalized_row)
+
+    for name, count in group_counts.items():
+        if count != 10:
+            raise ValueError(f"{name} must have exactly 10 rows (current: {count})")
+    for name, rows_in_group in grouped_rows.items():
+        if _has_overlap(rows_in_group):
+            raise ValueError(f"{name}の基準の重複を修正してください")
+
+    for idx, row in enumerate(normalized, start=1):
+        row["id"] = str(idx)
+
+    with KIJUN_CSV_PATH.open("w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=KIJUN_FIELDS)
+        writer.writeheader()
+        writer.writerows(normalized)
 
 
 def save_result_csv(result: dict[str, object]) -> None:
@@ -542,9 +625,11 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         static_map = {
-            "/": (APP_HTML_PATH, "text/html; charset=utf-8"),
+            "/": (INDEX_HTML_PATH, "text/html; charset=utf-8"),
+            "/index.html": (INDEX_HTML_PATH, "text/html; charset=utf-8"),
             "/app.html": (APP_HTML_PATH, "text/html; charset=utf-8"),
             "/result.html": (RESULT_HTML_PATH, "text/html; charset=utf-8"),
+            "/kijun_edit.html": (KIJUN_EDIT_HTML_PATH, "text/html; charset=utf-8"),
             "/address.html": (HTML_PATH, "text/html; charset=utf-8"),
             "/style.css": (STYLE_CSS_PATH, "text/css; charset=utf-8"),
             "/script.js": (SCRIPT_JS_PATH, "application/javascript; charset=utf-8"),
@@ -562,6 +647,10 @@ class Handler(BaseHTTPRequestHandler):
             )
             return
 
+        if self.path == "/api/kijun":
+            self._send_json({"rows": load_kijun_rows()})
+            return
+
         info = static_map.get(self.path)
         if info is None:
             self._send_html("<h1>404 Not Found</h1>", status=404)
@@ -574,6 +663,21 @@ class Handler(BaseHTTPRequestHandler):
         self._send_bytes(file_path.read_bytes(), content_type)
 
     def do_POST(self) -> None:
+        if self.path == "/api/kijun":
+            length = int(self.headers.get("Content-Length", "0"))
+            raw_bytes = self.rfile.read(length)
+            try:
+                payload = json.loads(raw_bytes.decode("utf-8"))
+                rows = payload.get("rows", [])
+                if not isinstance(rows, list):
+                    raise ValueError("rows must be a list")
+                save_kijun_rows(rows)
+            except Exception as e:
+                self._send_json({"ok": False, "error": str(e)}, status=400)
+                return
+            self._send_json({"ok": True, "rows": load_kijun_rows()})
+            return
+
         if self.path not in ("/submit", "/submit-json"):
             self._send_html("<h1>404 Not Found</h1>", status=404)
             return
@@ -611,8 +715,14 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    host = os.getenv("ADDRESS_SERVER_HOST", "127.0.0.1")
-    port = int(os.getenv("ADDRESS_SERVER_PORT", "8000"))
+    # Render-like platforms provide PORT and require binding to 0.0.0.0.
+    render_port = os.getenv("PORT", "").strip()
+    if render_port:
+        host = os.getenv("ADDRESS_SERVER_HOST", "0.0.0.0")
+        port = int(render_port)
+    else:
+        host = os.getenv("ADDRESS_SERVER_HOST", "127.0.0.1")
+        port = int(os.getenv("ADDRESS_SERVER_PORT", "8000"))
     httpd = ThreadingHTTPServer((host, port), Handler)
     print(f"Server started: http://{host}:{port}")
     print("Open app.html or address.html via this URL to test.")
