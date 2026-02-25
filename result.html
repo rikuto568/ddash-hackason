@@ -1,33 +1,102 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>結果ページ - 子育て住まいチェッカー</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      .score-big {
+        font-size: clamp(36px, 8vw, 72px);
+        font-weight: 800;
+        line-height: 1.1;
+        text-align: center;
+        margin: 8px 0 16px;
+      }
+      
+      .link-row {
+        display: flex;
+        justify-content: center;
+        margin: 6px 0 14px;
+      }
+      .link-row a {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #fdba74;
+      }
+      .detail-toggle-wrap {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0 10px;
+      }
+      #details-panel {
+        display: none;
+      }
+      #details-panel.show {
+        display: block;
+      }
+      #toggle-details-btn {
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <h1 class="calicurate_result">計算結果</h1>
 
     <div id="result-container">
-      <p id="output">結果を読み込み中...</p>
-      <pre id="details" style="white-space: pre-wrap; word-break: break-word;"></pre>
+      <div id="big-score" class="score-big">-- 点</div>
+      <p id="output" class="score-sub">結果を読み込み中...</p>
+
+      <div id="suumo-link-row" class="link-row" style="display: none;">
+        <a id="suumo-link" href="#" target="_blank" rel="noopener noreferrer">SUUMOで周辺を検索する。</a>
+      </div>
+
+      <div class="detail-toggle-wrap">
+        <button id="toggle-details-btn" type="button">解析課程を表示</button>
+      </div>
+
+      <div id="details-panel">
+        <pre id="details" style="white-space: pre-wrap; word-break: break-word;"></pre>
+      </div>
     </div>
 
-    <button id="back-btn"><i class="fa-solid fa-door-open"></i>戻る</button>
+    <button id="back-btn" type="button">戻る</button>
 
     <script>
       const addressResult = JSON.parse(localStorage.getItem("address_result") || "null");
       const kajuaveResult = JSON.parse(localStorage.getItem("kajuave_result") || "null");
       const formInput = JSON.parse(localStorage.getItem("app_form_input") || "null");
 
+      const bigScoreEl = document.getElementById("big-score");
       const outputEl = document.getElementById("output");
       const detailsEl = document.getElementById("details");
+      const detailsPanelEl = document.getElementById("details-panel");
+      const toggleDetailsBtnEl = document.getElementById("toggle-details-btn");
+      const suumoLinkRowEl = document.getElementById("suumo-link-row");
+      const suumoLinkEl = document.getElementById("suumo-link");
 
       if (kajuaveResult && typeof kajuaveResult.weighted_result === "number") {
-        outputEl.innerText = `加重平均結果（kajuave / 100点満点）: ${kajuaveResult.weighted_result} 点`;
+        const scoreText = Number(kajuaveResult.weighted_result).toFixed(1).replace(/\.0$/, "");
+        bigScoreEl.innerText = `${scoreText} 点`;
+        outputEl.innerText = "100点満点での総合スコア";
       } else {
+        bigScoreEl.innerText = "-- 点";
         outputEl.innerText = "kajuave の結果を取得できませんでした";
+      }
+
+      const suumoKu = String((addressResult && addressResult.ku) || "").trim();
+      if (suumoLinkEl && suumoLinkRowEl) {
+        suumoLinkEl.href = "https://suumo.jp/map/kyoto/";
+        suumoLinkEl.innerText = suumoKu
+          ? `SUUMOで${suumoKu}周辺を検索する。`
+          : "SUUMOで京都周辺を検索する。";
+        suumoLinkRowEl.style.display = "flex";
       }
 
       const lines = [];
@@ -42,13 +111,28 @@
         lines.push(`mini.score_jiko: ${addressResult["mini.score_jiko"] ?? ""}`);
         lines.push(`population.number: ${addressResult.population_number ?? ""}`);
         lines.push(`mini.score_population: ${addressResult["mini.score_population"] ?? ""}`);
+        lines.push(`kindergarden.number: ${addressResult.kindergarden_number ?? ""}`);
+        lines.push(`mini.score_kindergarden: ${addressResult["mini.score_kindergarden"] ?? ""}`);
         lines.push(`mini.score_station: ${addressResult["mini.score_station"] ?? ""}`);
+        lines.push(`mini.score_park: ${addressResult["mini.score_park"] ?? ""}`);
+        lines.push(`mini.score_supermarket: ${addressResult["mini.score_supermarket"] ?? ""}`);
+        lines.push(`mini.score_library: ${addressResult["mini.score_library"] ?? ""}`);
+        lines.push(`mini.score_cityoffices: ${addressResult["mini.score_cityoffices"] ?? ""}`);
         lines.push(`mini.number: ${addressResult["mini.number"] ?? ""}`);
         lines.push(`mini.score: ${addressResult["mini.score"] ?? ""}`);
         lines.push(`score (seikika / anzen): ${addressResult.score ?? ""}`);
         lines.push(`score (seikika / station): ${addressResult.station_score ?? ""}`);
         lines.push(`score (seikika / population): ${addressResult.population_score ?? ""}`);
+        lines.push(`score (seikika / kindergarden): ${addressResult.kindergarden_score ?? ""}`);
+        lines.push(`score (seikika / park): ${addressResult.park_score ?? ""}`);
+        lines.push(`score (seikika / supermarket): ${addressResult.supermarket_score ?? ""}`);
+        lines.push(`score (seikika / library): ${addressResult.library_score ?? ""}`);
+        lines.push(`score (seikika / cityoffices): ${addressResult.cityoffices_score ?? ""}`);
         lines.push(`station: ${addressResult.station_name ?? ""} / ${addressResult.station_distance_m ?? ""} m`);
+        lines.push(`park: ${addressResult.park_name ?? ""} / ${addressResult.park_distance_m ?? ""} m`);
+        lines.push(`supermarket: ${addressResult.supermarket_name ?? ""} / ${addressResult.supermarket_distance_m ?? ""} m`);
+        lines.push(`library: ${addressResult.library_name ?? ""} / ${addressResult.library_distance_m ?? ""} m`);
+        lines.push(`cityoffices: ${addressResult.cityoffices_name ?? ""} / ${addressResult.cityoffices_distance_m ?? ""} m`);
         lines.push(`nearest public facility distance: ${addressResult.kokyou_kyori_m ?? ""} m`);
         if (addressResult.error) lines.push(`error: ${addressResult.error}`);
       }
@@ -68,9 +152,19 @@
         lines.push(`anzen: ${formInput.anzen ?? ""}`);
         lines.push(`station: ${formInput.station ?? ""}`);
         lines.push(`population: ${formInput.population ?? ""}`);
+        lines.push(`park: ${formInput.park ?? ""}`);
+        lines.push(`supermarket: ${formInput.supermarket ?? ""}`);
+        lines.push(`library: ${formInput.library ?? ""}`);
+        lines.push(`cityoffices: ${formInput.cityoffices ?? ""}`);
+        lines.push(`kindergarden: ${formInput.kindergarden ?? ""}`);
       }
 
       detailsEl.innerText = lines.join("\n");
+
+      toggleDetailsBtnEl.addEventListener("click", () => {
+        const open = detailsPanelEl.classList.toggle("show");
+        toggleDetailsBtnEl.innerText = open ? "解析課程を隠す" : "解析課程を表示";
+      });
 
       document.getElementById("back-btn").addEventListener("click", () => {
         window.location.href = "app.html";
@@ -78,3 +172,4 @@
     </script>
   </body>
 </html>
+

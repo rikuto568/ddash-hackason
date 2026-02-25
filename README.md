@@ -22,7 +22,7 @@ pip install -r requirements.txt
 ### 1. 住所解析サーバー
 
 ```powershell
-python address_submit_server.py
+python server.py
 ```
 
 ### 2. kajuave サーバー（加重平均 API）
