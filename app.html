@@ -1,830 +1,650 @@
 ﻿<!doctype html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>子育て住まいチェッカー</title>
-        <link rel="stylesheet" href="style.css" />
-        <style>
-            #loading-overlay {
-                position: fixed;
-                inset: 0;
-                display: none;
-                align-items: center;
-                justify-content: center;
-                background: rgba(255, 255, 255, 0.85);
-                z-index: 9999;
-            }
-            #loading-overlay.show {
-                display: flex;
-            }
-            .loading-box {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 12px;
-                padding: 20px 24px;
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-            }
-            .spinner {
-                width: 32px;
-                height: 32px;
-                border: 4px solid #d1d5db;
-                border-top-color: #2563eb;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-            }
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-            .map-toggle-wrap {
-                margin-top: 8px;
-            }
-            #map-toggle-btn {
-                font-size: 12px;
-                padding: 4px 8px;
-            }
-            #map-panel {
-                display: none;
-                margin-top: 8px;
-                margin-bottom: 10px;
-            }
-            #map-panel.show {
-                display: block;
-            }
-            #map-box {
-                width: min(100%, 520px);
-                height: 240px;
-                border: 1px solid #d1d5db;
-                border-radius: 8px;
-                overflow: hidden;
-                background: #f3f4f6;
-                margin: 0 auto;
-                transition:
-                    width 0.15s ease,
-                    height 0.15s ease;
-            }
-            #map-box.size-sm {
-                width: min(100%, 60vw);
-                height: min(32vh, 220px);
-            }
-            #map-box.size-md {
-                width: min(100%, 72vw);
-                height: min(40vh, 300px);
-            }
-            #map-box.size-lg {
-                width: min(100%, 86vw);
-                height: min(55vh, 420px);
-            }
-            .map-size-controls {
-                display: none;
-                justify-content: center;
-                gap: 6px;
-                margin-bottom: 6px;
-            }
-            .map-size-controls.show {
-                display: flex;
-            }
-            .map-size-btn {
-                font-size: 12px;
-                padding: 4px 8px;
-            }
-            #map-help {
-                font-size: 12px;
-                margin: 6px 0 0;
-                color: #4b5563;
-                text-align: center;
-            }
-            .criteria-grid {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 12px 10px;
-                width: min(1100px, 92vw);
-                margin: 12px auto 0;
-                align-items: start;
-            }
-            .criterion {
-                padding: 8px 10px 12px;
-                border: none;
-                border-radius: 0;
-                background: transparent;
-                text-align: center;
-            }
-            .criterion h3 {
-                margin: 0 0 12px;
-                font-size: 16px;
-                text-align: center;
-            }
-            .radio-row {
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: center;
-            }
-            .radio-row label {
-                display: inline-flex;
-                align-items: center;
-                flex-direction: column;
-                gap: 6px;
-                margin: 4px 10px 8px;
-            }
-            @media (max-width: 700px) {
-                .criteria-grid {
-                    grid-template-columns: 1fr;
-                }
-            }
-            .kijun-edit-link {
-                position: fixed;
-                top: 12px;
-                right: 12px;
-                z-index: 1000;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                padding: 8px 12px;
-                border-radius: 999px;
-                border: 1px solid #bfdbfe;
-                background: rgba(255, 255, 255, 0.95);
-                color: #1d4ed8;
-                text-decoration: none;
-                font-size: 13px;
-                font-weight: 700;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            }
-        </style>
-    </head>
-    <body>
-        <a class="kijun-edit-link" href="./kijun_edit.html">基準を修正する</a>
-        <div id="loading-overlay" aria-live="polite" aria-busy="true">
-            <div class="loading-box">
-                <div class="spinner" aria-hidden="true"></div>
-                <div>計測中...</div>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>子育て住まいチェッカー</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      #loading-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.85);
+        z-index: 9999;
+      }
+      #loading-overlay.show {
+        display: flex;
+      }
+      .loading-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+      }
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 4px solid #d1d5db;
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .map-toggle-wrap {
+        margin-top: 8px;
+      }
+      #map-toggle-btn {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+      #map-panel {
+        display: none;
+        margin-top: 8px;
+        margin-bottom: 10px;
+      }
+      #map-panel.show {
+        display: block;
+      }
+      #map-box {
+        width: min(100%, 520px);
+        height: 240px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f3f4f6;
+        margin: 0 auto;
+        transition:
+          width 0.15s ease,
+          height 0.15s ease;
+      }
+      #map-box.size-sm {
+        width: min(100%, 60vw);
+        height: min(32vh, 220px);
+      }
+      #map-box.size-md {
+        width: min(100%, 72vw);
+        height: min(40vh, 300px);
+      }
+      #map-box.size-lg {
+        width: min(100%, 86vw);
+        height: min(55vh, 420px);
+      }
+      .map-size-controls {
+        display: none;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .map-size-controls.show {
+        display: flex;
+      }
+      .map-size-btn {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+      #map-help {
+        font-size: 12px;
+        margin: 6px 0 0;
+        color: #4b5563;
+        text-align: center;
+      }
+      .criteria-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 10px;
+        width: min(1100px, 92vw);
+        margin: 12px auto 0;
+        align-items: start;
+      }
+      .criterion {
+        padding: 8px 10px 12px;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        text-align: center;
+      }
+      .criterion h3 {
+        margin: 0 0 12px;
+        font-size: 16px;
+        text-align: center;
+      }
+      .radio-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+      }
+      .radio-row label {
+        display: inline-flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 6px;
+        margin: 4px 10px 8px;
+      }
+      @media (max-width: 700px) {
+        .criteria-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .kijun-edit-link {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 1000;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid #bfdbfe;
+        background: rgba(255, 255, 255, 0.95);
+        color: #1d4ed8;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <a class="kijun-edit-link" href="./kijun_edit.html">基準を修正する</a>
+    <div id="loading-overlay" aria-live="polite" aria-busy="true">
+      <div class="loading-box">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>計測中...</div>
+      </div>
+    </div>
+    <h2>数字を選んでください</h2>
+    <input type="text" placeholder="住所を入力してください" />
+    <div class="map-toggle-wrap">
+      <button id="map-toggle-btn" type="button">マップで選択</button>
+    </div>
+    <div id="map-panel">
+      <div id="map-size-controls" class="map-size-controls">
+        <button class="map-size-btn" type="button" data-map-size="sm">
+          小
+        </button>
+        <button class="map-size-btn" type="button" data-map-size="md">
+          中
+        </button>
+        <button class="map-size-btn" type="button" data-map-size="lg">
+          大
+        </button>
+      </div>
+      <div id="map-box" class="size-md"></div>
+      <p id="map-help">
+        地図をクリックしてピンを置けます（Google Maps JavaScript API
+        が有効な場合、住所欄に反映）。
+      </p>
+    </div>
+
+    <div class="criteria-grid">
+      <section class="criterion">
+        <h3>安全性（anzen）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="anzen" value="1" />1</label>
+          <label><input type="radio" name="anzen" value="2" />2</label>
+          <label><input type="radio" name="anzen" value="3" checked />3</label>
+          <label><input type="radio" name="anzen" value="4" />4</label>
+          <label><input type="radio" name="anzen" value="5" />5</label>
         </div>
-        <h2>数字を選んでください（なんかもっとあるかも）</h2>
-        <input type="text" placeholder="住所を入力してください" />
-        <div class="map-toggle-wrap">
-            <button id="map-toggle-btn" type="button">マップで選択</button>
+      </section>
+
+      <section class="criterion">
+        <h3>交通アクセス性（station）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="station" value="1" />1</label>
+          <label><input type="radio" name="station" value="2" />2</label>
+          <label
+            ><input type="radio" name="station" value="3" checked />3</label
+          >
+          <label><input type="radio" name="station" value="4" />4</label>
+          <label><input type="radio" name="station" value="5" />5</label>
         </div>
-        <div id="map-panel">
-            <div id="map-size-controls" class="map-size-controls">
-                <button class="map-size-btn" type="button" data-map-size="sm">
-                    小
-                </button>
-                <button class="map-size-btn" type="button" data-map-size="md">
-                    中
-                </button>
-                <button class="map-size-btn" type="button" data-map-size="lg">
-                    大
-                </button>
-            </div>
-            <div id="map-box" class="size-md"></div>
-            <p id="map-help">
-                地図をクリックしてピンを置けます（Google Maps JavaScript API
-                が有効な場合、住所欄に反映）。
-            </p>
+      </section>
+
+      <section class="criterion">
+        <h3>人口の多さ（population）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="population" value="1" />1</label>
+          <label><input type="radio" name="population" value="2" />2</label>
+          <label
+            ><input type="radio" name="population" value="3" checked />3</label
+          >
+          <label><input type="radio" name="population" value="4" />4</label>
+          <label><input type="radio" name="population" value="5" />5</label>
         </div>
+      </section>
 
-        <div class="criteria-grid">
-            <section class="criterion">
-                <h3>安全性（anzen）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input type="radio" name="anzen" value="1" />1</label
-                    >
-                    <label
-                        ><input type="radio" name="anzen" value="2" />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="anzen"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input type="radio" name="anzen" value="4" />4</label
-                    >
-                    <label
-                        ><input type="radio" name="anzen" value="5" />5</label
-                    >
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>交通アクセス性（station）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input type="radio" name="station" value="1" />1</label
-                    >
-                    <label
-                        ><input type="radio" name="station" value="2" />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="station"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input type="radio" name="station" value="4" />4</label
-                    >
-                    <label
-                        ><input type="radio" name="station" value="5" />5</label
-                    >
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>人口の多さ（population）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input
-                            type="radio"
-                            name="population"
-                            value="1"
-                        />1</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="population"
-                            value="2"
-                        />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="population"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="population"
-                            value="4"
-                        />4</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="population"
-                            value="5"
-                        />5</label
-                    >
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>公園の近さ（park）</h3>
-                <div class="radio-row">
-                    <label><input type="radio" name="park" value="1" />1</label>
-                    <label><input type="radio" name="park" value="2" />2</label>
-                    <label
-                        ><input
-                            type="radio"
-                            name="park"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label><input type="radio" name="park" value="4" />4</label>
-                    <label><input type="radio" name="park" value="5" />5</label>
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>スーパーの近さ（supermarket）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input
-                            type="radio"
-                            name="supermarket"
-                            value="1"
-                        />1</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="supermarket"
-                            value="2"
-                        />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="supermarket"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="supermarket"
-                            value="4"
-                        />4</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="supermarket"
-                            value="5"
-                        />5</label
-                    >
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>図書館の近さ（library）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input type="radio" name="library" value="1" />1</label
-                    >
-                    <label
-                        ><input type="radio" name="library" value="2" />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="library"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input type="radio" name="library" value="4" />4</label
-                    >
-                    <label
-                        ><input type="radio" name="library" value="5" />5</label
-                    >
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>市役所の近さ（cityoffices）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input
-                            type="radio"
-                            name="cityoffices"
-                            value="1"
-                        />1</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="cityoffices"
-                            value="2"
-                        />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="cityoffices"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="cityoffices"
-                            value="4"
-                        />4</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="cityoffices"
-                            value="5"
-                        />5</label
-                    >
-                </div>
-            </section>
-
-            <section class="criterion">
-                <h3>区内の幼稚園の数（kindergarden）</h3>
-                <div class="radio-row">
-                    <label
-                        ><input
-                            type="radio"
-                            name="kindergarden"
-                            value="1"
-                        />1</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="kindergarden"
-                            value="2"
-                        />2</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="kindergarden"
-                            value="3"
-                            checked
-                        />3</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="kindergarden"
-                            value="4"
-                        />4</label
-                    >
-                    <label
-                        ><input
-                            type="radio"
-                            name="kindergarden"
-                            value="5"
-                        />5</label
-                    >
-                </div>
-            </section>
+      <section class="criterion">
+        <h3>公園の近さ（park）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="park" value="1" />1</label>
+          <label><input type="radio" name="park" value="2" />2</label>
+          <label><input type="radio" name="park" value="3" checked />3</label>
+          <label><input type="radio" name="park" value="4" />4</label>
+          <label><input type="radio" name="park" value="5" />5</label>
         </div>
+      </section>
 
-        <!-- ここのbrは仮で -->
-        <br /><br />
-        <button id="submit" type="button">決定</button>
-    </body>
+      <section class="criterion">
+        <h3>スーパーの近さ（supermarket）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="supermarket" value="1" />1</label>
+          <label><input type="radio" name="supermarket" value="2" />2</label>
+          <label
+            ><input type="radio" name="supermarket" value="3" checked />3</label
+          >
+          <label><input type="radio" name="supermarket" value="4" />4</label>
+          <label><input type="radio" name="supermarket" value="5" />5</label>
+        </div>
+      </section>
+
+      <section class="criterion">
+        <h3>図書館の近さ（library）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="library" value="1" />1</label>
+          <label><input type="radio" name="library" value="2" />2</label>
+          <label
+            ><input type="radio" name="library" value="3" checked />3</label
+          >
+          <label><input type="radio" name="library" value="4" />4</label>
+          <label><input type="radio" name="library" value="5" />5</label>
+        </div>
+      </section>
+
+      <section class="criterion">
+        <h3>市役所の近さ（cityoffices）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="cityoffices" value="1" />1</label>
+          <label><input type="radio" name="cityoffices" value="2" />2</label>
+          <label
+            ><input type="radio" name="cityoffices" value="3" checked />3</label
+          >
+          <label><input type="radio" name="cityoffices" value="4" />4</label>
+          <label><input type="radio" name="cityoffices" value="5" />5</label>
+        </div>
+      </section>
+
+      <section class="criterion">
+        <h3>区内の幼稚園の数（kindergarden）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="kindergarden" value="1" />1</label>
+          <label><input type="radio" name="kindergarden" value="2" />2</label>
+          <label
+            ><input
+              type="radio"
+              name="kindergarden"
+              value="3"
+              checked
+            />3</label
+          >
+          <label><input type="radio" name="kindergarden" value="4" />4</label>
+          <label><input type="radio" name="kindergarden" value="5" />5</label>
+        </div>
+      </section>
+    </div>
+
+    <!-- ここのbrは仮で -->
+    <br /><br />
+    <button id="submit" type="button">決定</button>
+  </body>
 </html>
 <!-- グーグルスタジオUI -->
 <script>
-    const pageHost = window.location.hostname || "127.0.0.1";
-    const pageProtocol =
-        window.location.protocol === "http:" ||
-        window.location.protocol === "https:"
-            ? window.location.protocol
-            : "http:";
-    const addressApiBase =
-        localStorage.getItem("ADDRESS_API_BASE") ||
-        `${pageProtocol}//${pageHost}:8000`;
-    const kajuaveApiBase =
-        localStorage.getItem("KAJUAVE_API_BASE") ||
-        `${pageProtocol}//${pageHost}:5000`;
-    const addressInputEl = document.querySelector('input[type="text"]');
-    const mapToggleBtnEl = document.getElementById("map-toggle-btn");
-    const mapPanelEl = document.getElementById("map-panel");
-    const mapBoxEl = document.getElementById("map-box");
-    const mapHelpEl = document.getElementById("map-help");
-    const mapSizeControlsEl = document.getElementById("map-size-controls");
+  const pageHost = window.location.hostname || "127.0.0.1";
+  const pageProtocol =
+    window.location.protocol === "http:" ||
+    window.location.protocol === "https:"
+      ? window.location.protocol
+      : "http:";
+  const addressApiBase =
+    localStorage.getItem("ADDRESS_API_BASE") ||
+    `${pageProtocol}//${pageHost}:8000`;
+  const kajuaveApiBase =
+    localStorage.getItem("KAJUAVE_API_BASE") ||
+    `${pageProtocol}//${pageHost}:5000`;
+  const addressInputEl = document.querySelector('input[type="text"]');
+  const mapToggleBtnEl = document.getElementById("map-toggle-btn");
+  const mapPanelEl = document.getElementById("map-panel");
+  const mapBoxEl = document.getElementById("map-box");
+  const mapHelpEl = document.getElementById("map-help");
+  const mapSizeControlsEl = document.getElementById("map-size-controls");
 
-    let googleMapsLoadPromise = null;
-    let appConfigPromise = null;
-    let mapInstance = null;
-    let mapMarker = null;
-    let mapGeocoder = null;
+  let googleMapsLoadPromise = null;
+  let appConfigPromise = null;
+  let mapInstance = null;
+  let mapMarker = null;
+  let mapGeocoder = null;
 
-    function cleanupGoogleAddress(text) {
-        if (!text) return "";
-        return String(text)
-            .replace(/^日本[、,\s]*/, "")
-            .replace(/^〒\d{3}-?\d{4}\s*/, "")
-            .trim();
-    }
+  function cleanupGoogleAddress(text) {
+    if (!text) return "";
+    return String(text)
+      .replace(/^日本[、,\s]*/, "")
+      .replace(/^〒\d{3}-?\d{4}\s*/, "")
+      .trim();
+  }
 
-    async function loadAppConfig() {
-        if (appConfigPromise) return appConfigPromise;
-        appConfigPromise = (async () => {
-            const res = await fetch(`${addressApiBase}/config`);
-            if (!res.ok) throw new Error(`config fetch failed: ${res.status}`);
-            return await res.json();
-        })();
-        return appConfigPromise;
-    }
+  async function loadAppConfig() {
+    if (appConfigPromise) return appConfigPromise;
+    appConfigPromise = (async () => {
+      const res = await fetch(`${addressApiBase}/config`);
+      if (!res.ok) throw new Error(`config fetch failed: ${res.status}`);
+      return await res.json();
+    })();
+    return appConfigPromise;
+  }
 
-    function loadGoogleMapsApi() {
-        if (window.google && window.google.maps)
-            return Promise.resolve(window.google.maps);
-        if (googleMapsLoadPromise) return googleMapsLoadPromise;
-        googleMapsLoadPromise = (async () => {
-            const cfg = await loadAppConfig();
-            const apiKey = String(cfg.google_maps_js_api_key || "").trim();
-            if (!apiKey) {
-                throw new Error("GOOGLE_MAPS_JS_API_KEY is not set on server");
+  function loadGoogleMapsApi() {
+    if (window.google && window.google.maps)
+      return Promise.resolve(window.google.maps);
+    if (googleMapsLoadPromise) return googleMapsLoadPromise;
+    googleMapsLoadPromise = (async () => {
+      const cfg = await loadAppConfig();
+      const apiKey = String(cfg.google_maps_js_api_key || "").trim();
+      if (!apiKey) {
+        throw new Error("GOOGLE_MAPS_JS_API_KEY is not set on server");
+      }
+
+      return await new Promise((resolve, reject) => {
+        const callbackName = `initGoogleMaps_${Date.now()}`;
+        window[callbackName] = () => {
+          try {
+            delete window[callbackName];
+          } catch (_e) {}
+          resolve(window.google.maps);
+        };
+
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=${callbackName}`;
+        script.async = true;
+        script.defer = true;
+        script.onerror = () =>
+          reject(new Error("Google Maps script load failed"));
+        document.head.appendChild(script);
+      });
+    })();
+
+    return googleMapsLoadPromise;
+  }
+
+  async function openMapPanel() {
+    mapPanelEl.classList.add("show");
+    mapSizeControlsEl.classList.add("show");
+    mapToggleBtnEl.innerText = "マップを閉じる";
+
+    if (mapInstance) return;
+
+    mapHelpEl.innerText = "地図を読み込み中...";
+
+    try {
+      const maps = await loadGoogleMapsApi();
+      mapInstance = new maps.Map(mapBoxEl, {
+        center: { lat: 35.0116, lng: 135.7681 }, // 京都市付近
+        zoom: 13,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControl: true,
+        gestureHandling: "greedy",
+      });
+      mapGeocoder = new maps.Geocoder();
+
+      mapInstance.addListener("click", (e) => {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+
+        if (!mapMarker) {
+          mapMarker = new maps.Marker({
+            position: { lat, lng },
+            map: mapInstance,
+          });
+        } else {
+          mapMarker.setPosition({ lat, lng });
+        }
+
+        mapHelpEl.innerText = `選択座標: ${lat.toFixed(6)}, ${lng.toFixed(6)}（住所取得中...）`;
+
+        if (!mapGeocoder) return;
+        mapGeocoder.geocode(
+          { location: { lat, lng }, language: "ja", region: "JP" },
+          (results, status) => {
+            if (status === "OK" && results && results[0]) {
+              const cleaned = cleanupGoogleAddress(
+                results[0].formatted_address,
+              );
+              if (cleaned) {
+                addressInputEl.value = cleaned;
+                mapHelpEl.innerText = `選択住所: ${cleaned}`;
+                return;
+              }
             }
+            mapHelpEl.innerText = `選択座標: ${lat.toFixed(6)}, ${lng.toFixed(6)}（住所を取得できませんでした）`;
+          },
+        );
+      });
 
-            return await new Promise((resolve, reject) => {
-                const callbackName = `initGoogleMaps_${Date.now()}`;
-                window[callbackName] = () => {
-                    try {
-                        delete window[callbackName];
-                    } catch (_e) {}
-                    resolve(window.google.maps);
-                };
+      mapHelpEl.innerText = "地図をクリックしてピンを置いてください。";
+    } catch (e) {
+      console.error(e);
+      mapHelpEl.innerText =
+        "地図を表示できません。server.py の .env に GOOGLE_MAPS_JS_API_KEY を設定してください。";
+    }
+  }
 
-                const script = document.createElement("script");
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=${callbackName}`;
-                script.async = true;
-                script.defer = true;
-                script.onerror = () =>
-                    reject(new Error("Google Maps script load failed"));
-                document.head.appendChild(script);
-            });
-        })();
+  function closeMapPanel() {
+    mapPanelEl.classList.remove("show");
+    mapSizeControlsEl.classList.remove("show");
+    mapToggleBtnEl.innerText = "マップで選択";
+  }
 
-        return googleMapsLoadPromise;
+  function setMapSize(size) {
+    mapBoxEl.classList.remove("size-sm", "size-md", "size-lg");
+    mapBoxEl.classList.add(`size-${size}`);
+    localStorage.setItem("MAP_BOX_SIZE", size);
+    if (mapInstance && window.google && window.google.maps) {
+      const center = mapMarker
+        ? mapMarker.getPosition()
+        : mapInstance.getCenter();
+      window.google.maps.event.trigger(mapInstance, "resize");
+      if (center) mapInstance.setCenter(center);
+    }
+  }
+
+  mapSizeControlsEl.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-map-size]");
+    if (!btn) return;
+    setMapSize(btn.dataset.mapSize);
+  });
+
+  setMapSize(localStorage.getItem("MAP_BOX_SIZE") || "md");
+
+  mapToggleBtnEl.addEventListener("click", async () => {
+    if (mapPanelEl.classList.contains("show")) {
+      closeMapPanel();
+      return;
+    }
+    await openMapPanel();
+  });
+
+  function weightedScore(scores, weights) {
+    if (!Array.isArray(scores) || !Array.isArray(weights))
+      throw new Error("scores/weights must be arrays");
+    if (scores.length !== weights.length)
+      throw new Error("scores と weights の長さが一致しません");
+    if (scores.length === 0) throw new Error("scores が空です");
+    const totalWeight = weights.reduce((a, b) => a + Number(b), 0);
+    if (totalWeight <= 0)
+      throw new Error("weights の合計は 0 より大きくしてください");
+    const sum = scores.reduce(
+      (acc, score, i) => acc + Number(score) * Number(weights[i]),
+      0,
+    );
+    return sum / totalWeight;
+  }
+
+  document.getElementById("submit").addEventListener("click", async (event) => {
+    event.preventDefault();
+    const loadingOverlay = document.getElementById("loading-overlay");
+    const address = addressInputEl.value.trim();
+
+    // 住所が "京都" で始まらなければ無効
+    const regex = /^京都/;
+
+    if (!regex.test(address) || address.length < 10) {
+      alert("京都の正しい住所を入力してください");
+      return; // 画面遷移を止める
     }
 
-    async function openMapPanel() {
-        mapPanelEl.classList.add("show");
-        mapSizeControlsEl.classList.add("show");
-        mapToggleBtnEl.innerText = "マップを閉じる";
+    // ラジオチェック
+    const radioGroups = [
+      "anzen",
+      "station",
+      "population",
+      "park",
+      "supermarket",
+      "library",
+      "cityoffices",
+      "kindergarden",
+    ];
+    const data = {}; // Pythonに送るデータ
+    for (const groupName of radioGroups) {
+      const checked = document.querySelector(
+        `input[name="${groupName}"]:checked`,
+      );
+      if (!checked) {
+        alert("全ての項目を選択してください");
+        return;
+      }
+      data[groupName] = checked.value;
+    }
 
-        if (mapInstance) return;
+    // 住所も送る
+    data.address = address;
 
-        mapHelpEl.innerText = "地図を読み込み中...";
+    try {
+      loadingOverlay.classList.add("show");
+      // 住所解析 + 各種スコア（server.py -> address1_where.py 等）
+      const addrRes = await fetch(`${addressApiBase}/submit-json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address }),
+      });
+      if (!addrRes.ok) {
+        throw new Error(`address server error: ${addrRes.status}`);
+      }
+      const addressResult = await addrRes.json();
+
+      // 今ある基準は anzen / station / population / park / supermarket / library / cityoffices / kindergarden。kajuave.py(/weighted) で集約（失敗時は同式でフォールバック）
+      const anzenScore = Number(addressResult.score);
+      const stationScore = Number(addressResult.station_score);
+      const populationScore = Number(addressResult.population_score);
+      const parkScore = Number(addressResult.park_score);
+      const supermarketScore = Number(addressResult.supermarket_score);
+      const libraryScore = Number(addressResult.library_score);
+      const cityofficesScore = Number(addressResult.cityoffices_score);
+      const kindergardenScore = Number(addressResult.kindergarden_score);
+      const anzenWeight = Number(data.anzen);
+      const stationWeight = Number(data.station);
+      const populationWeight = Number(data.population);
+      const parkWeight = Number(data.park);
+      const supermarketWeight = Number(data.supermarket);
+      const libraryWeight = Number(data.library);
+      const cityofficesWeight = Number(data.cityoffices);
+      const kindergardenWeight = Number(data.kindergarden);
+
+      let kajuaveResult = null;
+      if (
+        !Number.isNaN(anzenScore) &&
+        !Number.isNaN(stationScore) &&
+        !Number.isNaN(populationScore) &&
+        !Number.isNaN(parkScore) &&
+        !Number.isNaN(supermarketScore) &&
+        !Number.isNaN(libraryScore) &&
+        !Number.isNaN(cityofficesScore) &&
+        !Number.isNaN(kindergardenScore)
+      ) {
+        const scores = [
+          anzenScore,
+          stationScore,
+          populationScore,
+          parkScore,
+          supermarketScore,
+          libraryScore,
+          cityofficesScore,
+          kindergardenScore,
+        ];
+        const weights = [
+          anzenWeight,
+          stationWeight,
+          populationWeight,
+          parkWeight,
+          supermarketWeight,
+          libraryWeight,
+          cityofficesWeight,
+          kindergardenWeight,
+        ];
+        let weightedResult = null;
 
         try {
-            const maps = await loadGoogleMapsApi();
-            mapInstance = new maps.Map(mapBoxEl, {
-                center: { lat: 35.0116, lng: 135.7681 }, // 京都市付近
-                zoom: 13,
-                mapTypeControl: false,
-                streetViewControl: false,
-                fullscreenControl: false,
-                zoomControl: true,
-                gestureHandling: "greedy",
-            });
-            mapGeocoder = new maps.Geocoder();
-
-            mapInstance.addListener("click", (e) => {
-                const lat = e.latLng.lat();
-                const lng = e.latLng.lng();
-
-                if (!mapMarker) {
-                    mapMarker = new maps.Marker({
-                        position: { lat, lng },
-                        map: mapInstance,
-                    });
-                } else {
-                    mapMarker.setPosition({ lat, lng });
-                }
-
-                mapHelpEl.innerText = `選択座標: ${lat.toFixed(6)}, ${lng.toFixed(6)}（住所取得中...）`;
-
-                if (!mapGeocoder) return;
-                mapGeocoder.geocode(
-                    { location: { lat, lng }, language: "ja", region: "JP" },
-                    (results, status) => {
-                        if (status === "OK" && results && results[0]) {
-                            const cleaned = cleanupGoogleAddress(
-                                results[0].formatted_address,
-                            );
-                            if (cleaned) {
-                                addressInputEl.value = cleaned;
-                                mapHelpEl.innerText = `選択住所: ${cleaned}`;
-                                return;
-                            }
-                        }
-                        mapHelpEl.innerText = `選択座標: ${lat.toFixed(6)}, ${lng.toFixed(6)}（住所を取得できませんでした）`;
-                    },
-                );
-            });
-
-            mapHelpEl.innerText = "地図をクリックしてピンを置いてください。";
-        } catch (e) {
-            console.error(e);
-            mapHelpEl.innerText =
-                "地図を表示できません。server.py の .env に GOOGLE_MAPS_JS_API_KEY を設定してください。";
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 1500);
+          const kajuaveRes = await fetch(`${kajuaveApiBase}/weighted`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ scores, weights }),
+            signal: ctrl.signal,
+          });
+          clearTimeout(timer);
+          if (!kajuaveRes.ok)
+            throw new Error(`kajuave server error: ${kajuaveRes.status}`);
+          const kajuaveJson = await kajuaveRes.json();
+          weightedResult = Number(kajuaveJson.weighted_result);
+        } catch (_kajuaveErr) {
+          weightedResult = Number(
+            (weightedScore(scores, weights) * 100).toFixed(4),
+          );
         }
+
+        kajuaveResult = {
+          criteria: [
+            "anzen",
+            "station",
+            "population",
+            "park",
+            "supermarket",
+            "library",
+            "cityoffices",
+            "kindergarden",
+          ],
+          scores,
+          weights,
+          weighted_result: Number(Number(weightedResult).toFixed(4)),
+        };
+      }
+
+      localStorage.setItem("app_form_input", JSON.stringify(data));
+      localStorage.setItem("address_result", JSON.stringify(addressResult));
+      localStorage.setItem("kajuave_result", JSON.stringify(kajuaveResult));
+      window.location.href = "result.html";
+    } catch (err) {
+      loadingOverlay.classList.remove("show");
+      console.error(err);
+      alert(
+        `送信に失敗しました。server.py が起動しているか確認してください。\n送信先: ${addressApiBase}/submit-json`,
+      );
     }
-
-    function closeMapPanel() {
-        mapPanelEl.classList.remove("show");
-        mapSizeControlsEl.classList.remove("show");
-        mapToggleBtnEl.innerText = "マップで選択";
-    }
-
-    function setMapSize(size) {
-        mapBoxEl.classList.remove("size-sm", "size-md", "size-lg");
-        mapBoxEl.classList.add(`size-${size}`);
-        localStorage.setItem("MAP_BOX_SIZE", size);
-        if (mapInstance && window.google && window.google.maps) {
-            const center = mapMarker
-                ? mapMarker.getPosition()
-                : mapInstance.getCenter();
-            window.google.maps.event.trigger(mapInstance, "resize");
-            if (center) mapInstance.setCenter(center);
-        }
-    }
-
-    mapSizeControlsEl.addEventListener("click", (event) => {
-        const btn = event.target.closest("[data-map-size]");
-        if (!btn) return;
-        setMapSize(btn.dataset.mapSize);
-    });
-
-    setMapSize(localStorage.getItem("MAP_BOX_SIZE") || "md");
-
-    mapToggleBtnEl.addEventListener("click", async () => {
-        if (mapPanelEl.classList.contains("show")) {
-            closeMapPanel();
-            return;
-        }
-        await openMapPanel();
-    });
-
-    function weightedScore(scores, weights) {
-        if (!Array.isArray(scores) || !Array.isArray(weights))
-            throw new Error("scores/weights must be arrays");
-        if (scores.length !== weights.length)
-            throw new Error("scores と weights の長さが一致しません");
-        if (scores.length === 0) throw new Error("scores が空です");
-        const totalWeight = weights.reduce((a, b) => a + Number(b), 0);
-        if (totalWeight <= 0)
-            throw new Error("weights の合計は 0 より大きくしてください");
-        const sum = scores.reduce(
-            (acc, score, i) => acc + Number(score) * Number(weights[i]),
-            0,
-        );
-        return sum / totalWeight;
-    }
-
-    document
-        .getElementById("submit")
-        .addEventListener("click", async (event) => {
-            event.preventDefault();
-            const loadingOverlay = document.getElementById("loading-overlay");
-            const address = addressInputEl.value.trim();
-
-            // 住所が "京都" で始まらなければ無効
-            const regex = /^京都/;
-
-            if (!regex.test(address) || address.length < 10) {
-                alert("京都の正しい住所を入力してください");
-                return; // 画面遷移を止める
-            }
-
-            // ラジオチェック
-            const radioGroups = [
-                "anzen",
-                "station",
-                "population",
-                "park",
-                "supermarket",
-                "library",
-                "cityoffices",
-                "kindergarden",
-            ];
-            const data = {}; // Pythonに送るデータ
-            for (const groupName of radioGroups) {
-                const checked = document.querySelector(
-                    `input[name="${groupName}"]:checked`,
-                );
-                if (!checked) {
-                    alert("全ての項目を選択してください");
-                    return;
-                }
-                data[groupName] = checked.value;
-            }
-
-            // 住所も送る
-            data.address = address;
-
-            try {
-                loadingOverlay.classList.add("show");
-                // 住所解析 + 各種スコア（server.py -> address1_where.py 等）
-                const addrRes = await fetch(`${addressApiBase}/submit-json`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ address }),
-                });
-                if (!addrRes.ok) {
-                    throw new Error(`address server error: ${addrRes.status}`);
-                }
-                const addressResult = await addrRes.json();
-
-                // 今ある基準は anzen / station / population / park / supermarket / library / cityoffices / kindergarden。kajuave.py(/weighted) で集約（失敗時は同式でフォールバック）
-                const anzenScore = Number(addressResult.score);
-                const stationScore = Number(addressResult.station_score);
-                const populationScore = Number(addressResult.population_score);
-                const parkScore = Number(addressResult.park_score);
-                const supermarketScore = Number(
-                    addressResult.supermarket_score,
-                );
-                const libraryScore = Number(addressResult.library_score);
-                const cityofficesScore = Number(
-                    addressResult.cityoffices_score,
-                );
-                const kindergardenScore = Number(
-                    addressResult.kindergarden_score,
-                );
-                const anzenWeight = Number(data.anzen);
-                const stationWeight = Number(data.station);
-                const populationWeight = Number(data.population);
-                const parkWeight = Number(data.park);
-                const supermarketWeight = Number(data.supermarket);
-                const libraryWeight = Number(data.library);
-                const cityofficesWeight = Number(data.cityoffices);
-                const kindergardenWeight = Number(data.kindergarden);
-
-                let kajuaveResult = null;
-                if (
-                    !Number.isNaN(anzenScore) &&
-                    !Number.isNaN(stationScore) &&
-                    !Number.isNaN(populationScore) &&
-                    !Number.isNaN(parkScore) &&
-                    !Number.isNaN(supermarketScore) &&
-                    !Number.isNaN(libraryScore) &&
-                    !Number.isNaN(cityofficesScore) &&
-                    !Number.isNaN(kindergardenScore)
-                ) {
-                    const scores = [
-                        anzenScore,
-                        stationScore,
-                        populationScore,
-                        parkScore,
-                        supermarketScore,
-                        libraryScore,
-                        cityofficesScore,
-                        kindergardenScore,
-                    ];
-                    const weights = [
-                        anzenWeight,
-                        stationWeight,
-                        populationWeight,
-                        parkWeight,
-                        supermarketWeight,
-                        libraryWeight,
-                        cityofficesWeight,
-                        kindergardenWeight,
-                    ];
-                    let weightedResult = null;
-
-                    try {
-                        const ctrl = new AbortController();
-                        const timer = setTimeout(() => ctrl.abort(), 1500);
-                        const kajuaveRes = await fetch(
-                            `${kajuaveApiBase}/weighted`,
-                            {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ scores, weights }),
-                                signal: ctrl.signal,
-                            },
-                        );
-                        clearTimeout(timer);
-                        if (!kajuaveRes.ok)
-                            throw new Error(
-                                `kajuave server error: ${kajuaveRes.status}`,
-                            );
-                        const kajuaveJson = await kajuaveRes.json();
-                        weightedResult = Number(kajuaveJson.weighted_result);
-                    } catch (_kajuaveErr) {
-                        weightedResult = Number(
-                            (weightedScore(scores, weights) * 100).toFixed(4),
-                        );
-                    }
-
-                    kajuaveResult = {
-                        criteria: [
-                            "anzen",
-                            "station",
-                            "population",
-                            "park",
-                            "supermarket",
-                            "library",
-                            "cityoffices",
-                            "kindergarden",
-                        ],
-                        scores,
-                        weights,
-                        weighted_result: Number(
-                            Number(weightedResult).toFixed(4),
-                        ),
-                    };
-                }
-
-                localStorage.setItem("app_form_input", JSON.stringify(data));
-                localStorage.setItem(
-                    "address_result",
-                    JSON.stringify(addressResult),
-                );
-                localStorage.setItem(
-                    "kajuave_result",
-                    JSON.stringify(kajuaveResult),
-                );
-                window.location.href = "result.html";
-            } catch (err) {
-                loadingOverlay.classList.remove("show");
-                console.error(err);
-                alert(
-                    `送信に失敗しました。server.py が起動しているか確認してください。\n送信先: ${addressApiBase}/submit-json`,
-                );
-            }
-        });
+  });
 </script>
